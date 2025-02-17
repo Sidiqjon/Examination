@@ -5,9 +5,11 @@ import dotenv from "dotenv"
 
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
- 
+
 dotenv.config()
 const PORT = process.env.PORT || 4000
+
+console.log("salom");
 
 const options = {
     definition: {
