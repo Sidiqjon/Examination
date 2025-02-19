@@ -1,4 +1,3 @@
-import logger from "../logs/logger.js";
 import UserEnrolment from "../models/userenrolment.model.js";
 import User from "../models/user.model.js";
 import Branch from "../models/branch.model.js";
@@ -10,7 +9,6 @@ async function findAll(req, res) {
     let allEnrolments = await UserEnrolment.findAll();
     res.send({ data: allEnrolments });
   } catch (e) {
-    logger.error(`Error fetching all user enrolments: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
@@ -25,7 +23,6 @@ async function findOne(req, res) {
 
     res.send({ data: enrolment });
   } catch (e) {
-    logger.error(`Error fetching user enrolment with id ${req.params.id}: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
@@ -68,7 +65,6 @@ async function create(req, res) {
     await UserEnrolment.create(value);
     res.status(201).send({ message: "User Enrolment Created Successfully" });
   } catch (e) {
-    logger.error(`Error creating user enrolment: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
@@ -89,7 +85,6 @@ async function update(req, res) {
     await UserEnrolment.update(value, { where: { id } });
     res.send({ message: "User Enrolment Updated Successfully" });
   } catch (e) {
-    logger.error(`Error updating user enrolment with id ${req.params.id}: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
@@ -103,7 +98,6 @@ async function remove(req, res) {
     await UserEnrolment.destroy({ where: { id } });
     res.send({ message: "User Enrolment Deleted Successfully" });
   } catch (e) {
-    logger.error(`Error deleting user enrolment with id ${req.params.id}: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
@@ -135,7 +129,6 @@ async function Search(req, res) {
       },
     });
   } catch (e) {
-    logger.error(`Error Searching user enrolments: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }

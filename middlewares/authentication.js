@@ -1,20 +1,30 @@
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+import jwt from "jsonwebtoken"
+import dotenv from "dotenv"
 
-dotenv.config();
+dotenv.config()
+let JWTSECRET = process.env.JWTSECRET
 
-export function authenticate(req, res, next) {
-  const token = req.headers.authorization?.split(" ")[1];
-
-  if (!token) {
-    return res.status(401).json({ message: "Access Denied: No Token Provided!" });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; 
-    next();
-  } catch (err) {
-    res.status(403).json({ message: "Invalid Token!" });
-  }
+const authentication = (req, res, next) => {
+    let token = req.header("Authorization")
+    
+    if (!token || !token.startsWith("Bearer ")) {
+        return res.status(401).json({ message: "Not Authorized!" })
+    }
+    
+    token = token.split(" ")[1]
+    
+    try {
+        const data = jwt.verify(token, JWTSECRET)
+        
+        if (data.status == "active") {
+            req.user = data
+            next()
+        } else {
+            return res.status(400).json({ message: "Your Account is not activated. Please verify your email." })
+        }
+    } catch (error) {
+        res.status(400).json({ message: "Something is WRONG with your TOKEN!", data: error.message })
+    }
 }
+
+export default authentication

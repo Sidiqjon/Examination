@@ -1,5 +1,13 @@
-export function selfPolice(req, res, next) {
-    console.log(`Method: ${req.method}, URL: ${req.url}, Time: ${new Date().toISOString()}`);
-    next();
+function selfPolice(roles) {
+    return (req, res, next) => {
+      let { id } = req.params;
+      if (id == req.user.id || roles.includes(req.user.role)) {
+        next();
+        return;
+      }
+  
+      res.status(400).send({ message: "You Do Not have permission!" });
+    };
   }
   
+export default selfPolice;

@@ -1,4 +1,3 @@
-import logger from "../logs/logger.js";
 import Region from "../models/region.model.js";
 import { updateRegionValidation } from "../validations/region.validation.js";
 
@@ -10,7 +9,6 @@ async function findAll(req, res) {
     }
     res.send({ data: allRegions });
   } catch (e) {
-    logger.error(`Error fetching all regions: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
@@ -26,7 +24,6 @@ async function findOne(req, res) {
 
     res.send({ data: region });
   } catch (e) {
-    logger.error(`Error fetching region with id ${req.params.id}: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
@@ -42,7 +39,6 @@ async function create(req, res) {
     await Region.create(value);
     res.status(201).send({ message: "Region Created Successfully" });
   } catch (e) {
-    logger.error(`Error creating region: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
@@ -63,7 +59,6 @@ async function update(req, res) {
     await Region.update(value, { where: { id } });
     res.send({ message: "Region Updated Successfully" });
   } catch (e) {
-    logger.error(`Error updating region with id ${req.params.id}: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
@@ -81,7 +76,6 @@ async function remove(req, res) {
     await Region.destroy({ where: { id } });
     res.send({ message: "Region Deleted Successfully" });
   } catch (e) {
-    logger.error(`Error deleting region with id ${req.params.id}: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
@@ -123,10 +117,8 @@ async function Search(req, res) {
       },
     });
   } catch (e) {
-    logger.error(`Error Searching regions: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
-
 
 export { findAll, Search, findOne, create, update, remove };

@@ -1,4 +1,3 @@
-import logger from "../logs/logger.js";
 import Comment from "../models/comment.model.js";
 import LearningCenter from "../models/learningCenter.model.js";
 import User from "../models/user.model.js"; 
@@ -12,7 +11,6 @@ async function findAll(req, res) {
     }
     res.send({ data: allComments });
   } catch (e) {
-    logger.error(`Error fetching comments: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
@@ -28,7 +26,6 @@ async function findOne(req, res) {
 
     res.send({ data: comment });
   } catch (e) {
-    logger.error(`Error fetching comment with id ${req.params.id}: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
@@ -62,7 +59,6 @@ async function create(req, res) {
     res.status(201).send({ message: "Comment Created Successfully" });
 
   } catch (e) {
-    logger.error(`Error creating comment: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
@@ -84,7 +80,6 @@ async function update(req, res) {
 
     res.send({ message: "Comment Updated Successfully" });
   } catch (e) {
-    logger.error(`Error updating comment with id ${req.params.id}: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
@@ -101,7 +96,6 @@ async function remove(req, res) {
     await Comment.destroy({ where: { id } }); 
     res.send({ message: "Comment Deleted Successfully" }); 
   } catch (e) {
-    logger.error(`Error deleting comment with id ${req.params.id}: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" }); 
   }
 }
@@ -135,7 +129,6 @@ async function Search(req, res) {
       totalPages: Math.ceil(count / limit),
     });
   } catch (e) {
-    logger.error(`Error Searching comments: ${e.message}`);
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
