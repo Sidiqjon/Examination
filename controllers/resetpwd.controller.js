@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import { totp } from "otplib";
 import { validatePassword } from "../validations/user.validation.js"
+import {loggerError, loggerInfo} from "../logs/logger.js"
 
 dotenv.config();
 const OTPSECRET = process.env.OTPSECRET;

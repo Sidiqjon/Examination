@@ -14,7 +14,8 @@ const LearningCenter = db.define(
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false, 
+      unique: true
     },
     phoneNumber: {
       type: DataTypes.STRING,
