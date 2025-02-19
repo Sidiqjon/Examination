@@ -4,7 +4,7 @@ import mainRoute from "./routes/index.js"
 import dotenv from "dotenv"
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
- 
+
 dotenv.config()
 const PORT = process.env.PORT || 4000
 
@@ -33,6 +33,7 @@ const app = express()
 app.use(express.json())
 
 app.use("/api", mainRoute)
+
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
