@@ -59,7 +59,7 @@ const LearningCenter = db.define(
   }
 );
 
-Region.hasOne(LearningCenter, { foreignKey: "regionId", onDelete: "CASCADE", onUpdate: "CASCADE" });
+Region.hasMany(LearningCenter, { foreignKey: "regionId", onDelete: "CASCADE", onUpdate: "CASCADE" });
 LearningCenter.belongsTo(Region, { foreignKey: "regionId", onDelete: "CASCADE", onUpdate: "CASCADE" });
 
 User.hasMany(LearningCenter, { foreignKey: "createdBy", onDelete: "CASCADE", onUpdate: "CASCADE" })

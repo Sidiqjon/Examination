@@ -4,7 +4,7 @@ let db = new Sequelize ({
     database: "SSA_examination",
     host: "localhost",
     username: "root",
-    password: "root",
+    password: "yusuf777$",
     dialect: "mysql",
     logging: false,
 })
