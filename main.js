@@ -2,7 +2,6 @@ import express from "express"
 import db from "./config/db.js"
 import mainRoute from "./routes/index.js"
 import dotenv from "dotenv"
-
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
  
