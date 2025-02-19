@@ -9,8 +9,6 @@ import swaggerUi from "swagger-ui-express";
 dotenv.config()
 const PORT = process.env.PORT || 4000
 
-console.log("salom");
-
 const options = {
     definition: {
       openapi: "3.1.0",
@@ -36,6 +34,7 @@ const app = express()
 app.use(express.json())
 
 app.use("/api", mainRoute)
+
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
