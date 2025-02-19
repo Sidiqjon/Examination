@@ -1,4 +1,7 @@
 import { Router } from "express";
+import commentRoutes from "./comment.routes.js";  
+import regionRoutes from "./region.routes.js";  
+import userEnrolmentRoutes from "./userenrolment.routes.js";  
 import routeResources from "./resources.routes.js";
 import routeLike from "./like.routes.js";
 import routeResourcesCategory from "./resourcesCategory.routes.js";
@@ -10,7 +13,10 @@ import routeLcField from "./lcfield.routes.js";
 import routeBranch from "./branch.routes.js";
 import Upoad from "./upload.routes.js";
 
-let mainRoute = Router();
+const mainRoute = Router();
+
+
+
 mainRoute.use("/resources-categ", routeResourcesCategory);
 mainRoute.use("/resources", routeResources);
 mainRoute.use("/like", routeLike);
@@ -21,5 +27,8 @@ mainRoute.use("/learning-center", routeLearningCenter);
 mainRoute.use("/lcfield", routeLcField);
 mainRoute.use("/branch", routeBranch);
 mainRoute.use("/uploadimg", Upoad);
+mainRoute.use("/comments", commentRoutes);
+mainRoute.use("/regions", regionRoutes);
+mainRoute.use("/userenrolments", userEnrolmentRoutes)
 
 export default mainRoute;

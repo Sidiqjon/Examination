@@ -4,9 +4,10 @@ let db = new Sequelize ({
     database: "SSA_examination",
     host: "localhost",
     username: "root",
-    password: "root",
+    password: "1234",
     dialect: "mysql",
     logging: false,
 })
 
 export default db
+                      
