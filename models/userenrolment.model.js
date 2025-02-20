@@ -43,11 +43,11 @@ const UserEnrolment = db.define(
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     },
-    status: {
-      type: DataTypes.ENUM("waiting", "studying", "graduated"),
-      allowNull: false,
-      defaultValue: "studying",
-   },
+  //   status: {
+  //     type: DataTypes.ENUM("waiting", "studying", "graduated"),
+  //     allowNull: false,
+  //     defaultValue: "studying",
+  //  },
   },
   {
     timestamps: true,

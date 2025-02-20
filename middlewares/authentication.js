@@ -23,7 +23,7 @@ const authentication = (req, res, next) => {
             return res.status(400).json({ message: "Your Account is not activated. Please verify your email." })
         }
     } catch (error) {
-        res.status(400).json({ message: "Something is WRONG with your TOKEN!", data: error.message })
+        res.status(401).json({ message: "Something is WRONG with your TOKEN!", data: error.message })
     }
 }
 

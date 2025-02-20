@@ -3,8 +3,8 @@ import { findAll, Search, findOne, create, update, remove } from "../controllers
 
 const router = Router();
 
-router.get("/", findAll);
 router.get("/search", Search);
+router.get("/", findAll);
 router.get("/:id", findOne);
 router.post("/", create);
 router.put("/:id", update);

@@ -104,6 +104,7 @@ async function remove(req, res) {
 async function Search(req, res) {
   try {
     let { filter, sort, page = 1, limit = 10 } = req.query;
+    
     let queryOptions = {};
     const offset = (page - 1) * limit;
     queryOptions.limit = parseInt(limit);
@@ -117,6 +118,9 @@ async function Search(req, res) {
       queryOptions.order = [JSON.parse(sort)];
     }
     let allEnrolments = await UserEnrolment.findAll(queryOptions);
+
+    console.log(queryOptions);
+    
     const totalCount = await UserEnrolment.count({ where: queryOptions.where });
     const totalPages = Math.ceil(totalCount / limit);
     res.send({

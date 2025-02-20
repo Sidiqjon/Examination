@@ -5,9 +5,14 @@ import dotenv from "dotenv";
 
 dotenv.config();
 const JWTSECRET = process.env.JWTSECRET;
+const REFRESHJWT = process.env.REFRESHJWT;
 
 function genAccessToken(user) {
-    return jwt.sign({ id: user.id, role: user.role, status: user.status }, JWTSECRET);
+    return jwt.sign({ id: user.id, role: user.role, status: user.status }, JWTSECRET, { expiresIn: "1d" });
+}
+
+function genRefreshToken(user) {
+    return jwt.sign({ id: user.id, role: user.role, status: user.status }, REFRESHJWT, { expiresIn: "7d" });
 }
 
 async function Login(req, res) {
@@ -30,8 +35,9 @@ async function Login(req, res) {
         }
 
         const accessToken = genAccessToken(user)
+        const refreshToken = genRefreshToken(user)
 
-        res.status(200).json({ message: "Logged in successfully!", token: accessToken });
+        res.status(200).json({ message: "Logged in successfully!", accessToken, refreshToken });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
