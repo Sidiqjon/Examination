@@ -68,6 +68,8 @@ async function create(req, res) {
       return res.status(401).json({ error: "Such a profession exists" });
     }
 
+    
+
     await Profession.create(value);
 
     loggerInfo.info(
@@ -121,7 +123,7 @@ async function update(req, res) {
     loggerError.error(
       `ERROR: ${e};  Method: ${req.method};  Profession-Update`
     );
-    res.status(401).json({ e });
+    res.status(401).json({ error: e.message });
   }
 }
 
@@ -177,7 +179,7 @@ async function Search(req, res) {
     let order = [];
 
     Object.keys(query).forEach((key) => {
-      if (key !== "sortField" && key !== "sortOrder") {
+      if (key !== "sortField" && key !== "sortOrder" && query[key]) {
         conditions[key] = {
           [Op.like]: `%${query[key]}%`,
         };

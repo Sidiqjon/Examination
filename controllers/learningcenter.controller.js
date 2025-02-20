@@ -8,6 +8,9 @@ import User from "../models/user.model.js";
 import { Op } from "sequelize";
 import LCField from "../models/lcfields.model.js";
 import Field from "../models/field.model.js";
+import { loggerError, loggerInfo } from "../logs/logger.js";
+import Like from "../models/like.model.js";
+import Comment from "../models/comment.model.js";
 
 async function findAll(req, res) {
   try {
@@ -25,6 +28,15 @@ async function findAll(req, res) {
           model: Field,
           attributes: ["id", "name", "professionId", "subjectId"],
         },
+        {
+          model: Like,
+          attributes: ["id", "userId", "learningCenterId"],
+        },
+        {
+          model: Comment,
+          attributes: ["id", "comment","userId", "star"],
+        },
+
       ],
     });
 
@@ -32,20 +44,20 @@ async function findAll(req, res) {
       loggerError.error(
         `ERROR: No information available.;  Method: ${req.method};  LearningCenter-FindAll`
       );
-      return res.status(401).json({ error: "No information available." });
+      return res.status(404).json({ error: "No information available." });
     }
 
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully FindAll LearningCenter;`
     );
 
-    res.status(201).send({ data: all });
+    res.status(200).send({ data: all });
   } catch (e) {
     loggerError.error(
       `ERROR: ${e};  Method: ${req.method};  LearningCenters-FindAll`
     );
 
-    res.status(401).json({ error: e });
+    res.status(500).json({ error: e });
   }
 }
 
@@ -67,6 +79,14 @@ async function findOne(req, res) {
           model: Field,
           attributes: ["id", "name", "professionId", "subjectId"],
         },
+        {
+          model: Like,
+          attributes: ["id", "userId", "learningCenterId"],
+        },
+        {
+          model: Comment,
+          attributes: ["id", "comment","userId", "star"],
+        },
       ],
     });
 
@@ -74,20 +94,20 @@ async function findOne(req, res) {
       loggerError.error(
         `ERROR: Region Not Found;  Method: ${req.method};  LearningCenter-FindOne`
       );
-      return res.status(401).json({ error: "Region Not Found" });
+      return res.status(404).json({ error: "Region Not Found" });
     }
 
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully FindOne LearningCenter;`
     );
 
-    res.status(201).json({ data: one });
+    res.status(200).json({ data: one });
   } catch (e) {
     loggerError.error(
       `ERROR: ${e};  Method: ${req.method};  LearningCenters-FindOne`
     );
 
-    res.status(401).json({ error: e });
+    res.status(500).json({ error: e });
   }
 }
 
@@ -146,7 +166,7 @@ async function update(req, res) {
       loggerError.error(
         `ERROR: Learning Center Not Found;  Method: ${req.method};  LearningCenter-Update`
       );
-      return res.status(401).json({ error: "Learning Center Not Found" });
+      return res.status(404).json({ error: "Learning Center Not Found" });
     }
 
     let { error, value } = LearningCenterPatchValidation.validate(req.body);
@@ -155,20 +175,20 @@ async function update(req, res) {
       loggerError.error(
         `ERROR: ${error.details[0].message};  Method: ${req.method};  LearningCenter-Update`
       );
-      return res.status(401).json({ error: error.details[0].message });
+      return res.status(400).json({ error: error.details[0].message });
     }
 
     await LearningCenter.update(value, { where: { id } });
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully Update LearningCenter;`
     );
-    res.status(201).json({ message: "Update Successfully" });
+    res.status(200).json({ message: "Update Successfully" });
   } catch (e) {
     loggerError.error(
       `ERROR: ${e};  Method: ${req.method};  LearningCenters-Update`
     );
 
-    res.status(401).json({ error: e });
+    res.status(500).json({ error: e });
   }
 }
 
@@ -228,7 +248,7 @@ async function Search(req, res) {
     Object.keys(query).forEach((key) => {
       if (key !== "sortField" && key !== "sortOrder") {
         conditions[key] = {
-          [Op.LearningCenter]: `%${query[key]}%`,
+          [Op.like]: `%${query[key]}%`,
         };
       }
     });
@@ -255,6 +275,14 @@ async function Search(req, res) {
         {
           model: Field,
           attributes: ["id", "name", "professionId", "subjectId"],
+        },
+        {
+          model: Like,
+          attributes: ["id", "userId", "learningCenterId"],
+        },
+        {
+          model: Comment,
+          attributes: ["id", "comment","userId", "star"],
         },
       ],
     });

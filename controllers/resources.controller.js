@@ -6,6 +6,7 @@ import {
 import User from "../models/user.model.js";
 import ResourceCategory from "../models/resourceCategory.model.js";
 import { Op } from "sequelize";
+import { loggerError, loggerInfo } from "../logs/logger.js";
 
 async function findAll(req, res) {
   try {
@@ -29,9 +30,7 @@ async function findAll(req, res) {
       return res.status(401).json({ error: "No information available." });
     }
 
-    loggerInfo.info(
-      `Method: ${req.method};  Saccessfully FindAll Resources;`
-    );
+    loggerInfo.info(`Method: ${req.method};  Saccessfully FindAll Resources;`);
     res.status(201).send({ data: all });
   } catch (e) {
     loggerError.error(
@@ -60,14 +59,12 @@ async function findOne(req, res) {
 
     if (!one) {
       loggerError.error(
-        `ERROR: User Not Found;  Method: ${req.method};  Resources-FindOne`
+        `ERROR: resources Not Found;  Method: ${req.method};  Resources-FindOne`
       );
-      return res.status(401).json({ error: "User Not Found" });
+      return res.status(401).json({ error: "resources Not Found" });
     }
 
-    loggerInfo.info(
-      `Method: ${req.method};  Saccessfully FindOne Resources;`
-    );
+    loggerInfo.info(`Method: ${req.method};  Saccessfully FindOne Resources;`);
     res.status(201).json({ data: one });
   } catch (e) {
     loggerError.error(
@@ -88,14 +85,10 @@ async function create(req, res) {
     }
     await Resource.create(value);
 
-    loggerInfo.info(
-      `Method: ${req.method};  Saccessfully Create Resources;`
-    );
+    loggerInfo.info(`Method: ${req.method};  Saccessfully Create Resources;`);
     res.status(201).json({ message: "Created  Successfully" });
   } catch (e) {
-    loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  Resources-Create`
-    );
+    loggerError.error(`ERROR: ${e};  Method: ${req.method};  Resources-Create`);
     res.status(401).json({ error: e });
   }
 }
@@ -124,14 +117,10 @@ async function update(req, res) {
 
     await Resource.update(value, { where: { id } });
 
-    loggerInfo.info(
-      `Method: ${req.method};  Saccessfully Update Resources;`
-    );
+    loggerInfo.info(`Method: ${req.method};  Saccessfully Update Resources;`);
     res.status(201).json({ message: "Update Successfully" });
   } catch (e) {
-    loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  Resources-Update`
-    );
+    loggerError.error(`ERROR: ${e};  Method: ${req.method};  Resources-Update`);
     res.status(401).json({ error: e });
   }
 }
@@ -150,14 +139,10 @@ async function remove(req, res) {
 
     await Resource.destroy({ where: { id } });
 
-    loggerInfo.info(
-      `Method: ${req.method};  Saccessfully Delete Resources;`
-    );
+    loggerInfo.info(`Method: ${req.method};  Saccessfully Delete Resources;`);
     res.status(201).json({ message: "Delete Successfully" });
   } catch (e) {
-    loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  Resources-Delete`
-    );
+    loggerError.error(`ERROR: ${e};  Method: ${req.method};  Resources-Delete`);
     res.status(401).json({ error: e });
   }
 }
@@ -222,11 +207,9 @@ async function Search(req, res) {
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully Search Resources; data: ${results}`
     );
-    res.status(201).json({data: results});
+    res.status(201).json({ data: results });
   } catch (e) {
-    loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  Resources-Search`
-    );
+    loggerError.error(`ERROR: ${e};  Method: ${req.method};  Resources-Search`);
     res.send({ error: e.message });
   }
 }
