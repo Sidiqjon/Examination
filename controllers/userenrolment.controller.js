@@ -2,58 +2,68 @@ import UserEnrolment from "../models/userenrolment.model.js";
 import User from "../models/user.model.js";
 import Branch from "../models/branch.model.js";
 import LearningCenter from "../models/learningCenter.model.js";
-import { userEnrolmentValidation, userEnrolmentPatchValidation } from "../validations/userenrolment.validation.js";
+import {
+  userEnrolmentValidation,
+  userEnrolmentPatchValidation,
+} from "../validations/userenrolment.validation.js";
+import { Op } from "sequelize";
+import { loggerError, loggerInfo } from "../logs/logger.js";
 
-async function findAll(req, res) {
-  try {
-    let allEnrolments = await UserEnrolment.findAll();
-    res.send({ data: allEnrolments });
-  } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
-  }
-}
-async function findOne(req, res) {
-  try {
-    let { id } = req.params;
-    let enrolment = await UserEnrolment.findOne({ where: { id } });
-
-    if (!enrolment) {
-      return res.status(404).send({ error: "UserEnrolment Not Found" });
-    }
-
-    res.send({ data: enrolment });
-  } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
-  }
-}
 
 async function create(req, res) {
   try {
     const { userId, branchId, learningCenterId } = req.body;
 
-    if (!userId) {
-      return res.status(400).json({ error: "userId is required" });
-    }
     let userExists = await User.findByPk(userId);
     if (!userExists) {
-      return res.status(400).json({ error: "Invalid userId: User does not exist" });
+      return res
+        .status(400)
+        .json({ error: "Invalid userId: User does not exist" });
     }
+
     if (!branchId && !learningCenterId) {
-      return res.status(400).json({ error: "Either branchId or learningCenterId must be provided" });
+      return res.status(400).json({
+        error: "Either branchId or learningCenterId must be provided",
+      });
     }
     if (branchId && learningCenterId) {
-      return res.status(400).json({ error: "Only one of learningCenterId or branchId should be provided." });
+      return res.status(400).json({
+        error: "Only one of learningCenterId or branchId should be provided.",
+      });
     }
+
     if (branchId) {
       let branchExists = await Branch.findByPk(branchId);
+      let check = await UserEnrolment.findOne({ where: { userId, branchId } });
+
+      if (check) {
+        return res.status(409).json({
+          error: "You have previously registered with this branch.  ",
+        });
+      }
       if (!branchExists) {
-        return res.status(400).json({ error: "Invalid branchId: Branch does not exist" });
+        return res
+          .status(404)
+          .json({ error: "Invalid branchId: Branch does not exist" });
       }
     }
     if (learningCenterId) {
-      let learningCenterExists = await LearningCenter.findByPk(learningCenterId);
+      let learningCenterExists = await LearningCenter.findByPk(
+        learningCenterId
+      );
+      let check = await UserEnrolment.findOne({
+        where: { userId, learningCenterId },
+      });
+
+      if (check) {
+        return res.status(409).json({
+          error: "You have previously registered with this learning center.",
+        });
+      }
       if (!learningCenterExists) {
-        return res.status(400).json({ error: "Invalid learningCenterId: Learning Center does not exist" });
+        return res.status(404).json({
+          error: "Invalid learningCenterId: Learning Center does not exist",
+        });
       }
     }
 
@@ -69,25 +79,6 @@ async function create(req, res) {
   }
 }
 
-async function update(req, res) {
-  try {
-    let { id } = req.params;
-    let enrolment = await UserEnrolment.findOne({ where: { id } });
-    if (!enrolment) {
-      return res.status(404).json({ error: "UserEnrolment Not Found" });
-    }
-
-    const { error, value } = userEnrolmentPatchValidation.validate(req.body);
-    if (error) {
-      return res.status(400).json({ error: error.details[0].message });
-    }
-
-    await UserEnrolment.update(value, { where: { id } });
-    res.send({ message: "User Enrolment Updated Successfully" });
-  } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
-  }
-}
 async function remove(req, res) {
   try {
     let { id } = req.params;
@@ -101,39 +92,5 @@ async function remove(req, res) {
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
-async function Search(req, res) {
-  try {
-    let { filter, sort, page = 1, limit = 10 } = req.query;
-    
-    let queryOptions = {};
-    const offset = (page - 1) * limit;
-    queryOptions.limit = parseInt(limit);
-    queryOptions.offset = offset;
 
-    if (filter) {
-      queryOptions.where = JSON.parse(filter);
-    }
-
-    if (sort) {
-      queryOptions.order = [JSON.parse(sort)];
-    }
-    let allEnrolments = await UserEnrolment.findAll(queryOptions);
-
-    console.log(queryOptions);
-    
-    const totalCount = await UserEnrolment.count({ where: queryOptions.where });
-    const totalPages = Math.ceil(totalCount / limit);
-    res.send({
-      data: allEnrolments,
-      pagination: {
-        totalCount,
-        totalPages,
-        currentPage: parseInt(page),
-        pageSize: parseInt(limit),
-      },
-    });
-  } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
-  }
-}
-export { findAll, Search, findOne, create, update, remove };
+export { create, remove };

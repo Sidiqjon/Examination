@@ -76,6 +76,8 @@ async function create(req, res) {
       return res.status(404).json({ error: "Such a profession already exists" });
     }
 
+    
+
     await Profession.create(value);
 
     loggerInfo.info(
@@ -193,7 +195,7 @@ async function Search(req, res) {
     let order = [];
 
     Object.keys(query).forEach((key) => {
-      if (key !== "sortField" && key !== "sortOrder") {
+      if (key !== "sortField" && key !== "sortOrder" && query[key]) {
         conditions[key] = {
           [Op.like]: `%${query[key]}%`,
         };

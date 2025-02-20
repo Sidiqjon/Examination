@@ -10,5 +10,4 @@ route.post("/", create)
 route.patch("/:id", update)
 route.delete("/:id", remove)
 
-
 export default route

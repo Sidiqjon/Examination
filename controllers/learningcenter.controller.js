@@ -9,6 +9,8 @@ import { Op } from "sequelize";
 import LCField from "../models/lcfields.model.js";
 import Field from "../models/field.model.js";
 import { loggerError, loggerInfo } from "../logs/logger.js";
+import Like from "../models/like.model.js";
+import Comment from "../models/comment.model.js";
 
 async function findAll(req, res) {
   try {
@@ -26,6 +28,15 @@ async function findAll(req, res) {
           model: Field,
           attributes: ["id", "name", "professionId", "subjectId"],
         },
+        {
+          model: Like,
+          attributes: ["id", "userId", "learningCenterId"],
+        },
+        {
+          model: Comment,
+          attributes: ["id", "comment","userId", "star"],
+        },
+
       ],
     });
 
@@ -67,6 +78,14 @@ async function findOne(req, res) {
         {
           model: Field,
           attributes: ["id", "name", "professionId", "subjectId"],
+        },
+        {
+          model: Like,
+          attributes: ["id", "userId", "learningCenterId"],
+        },
+        {
+          model: Comment,
+          attributes: ["id", "comment","userId", "star"],
         },
       ],
     });
@@ -255,6 +274,14 @@ async function Search(req, res) {
         {
           model: Field,
           attributes: ["id", "name", "professionId", "subjectId"],
+        },
+        {
+          model: Like,
+          attributes: ["id", "userId", "learningCenterId"],
+        },
+        {
+          model: Comment,
+          attributes: ["id", "comment","userId", "star"],
         },
       ],
     });
