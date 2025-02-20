@@ -7,9 +7,8 @@ const userEnrolmentValidation = Joi.object({
 });
 
 const userEnrolmentPatchValidation = Joi.object({
-  userId: Joi.number(), 
-  branchId: Joi.number(),
-  learningCenterId: Joi.number()
+  branchId: Joi.number().positive().default(null),
+  learningCenterId: Joi.number().positive().default(null)
 });
 
 export { userEnrolmentValidation, userEnrolmentPatchValidation };

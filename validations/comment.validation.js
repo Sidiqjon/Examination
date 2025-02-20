@@ -1,16 +1,13 @@
 import Joi from 'joi';
 
 const createCommentValidation = Joi.object({
-  comment: Joi.string().required(),
-  star: Joi.number().precision(2).positive().required(),
+  comment: Joi.string().min(1).required(),
+  star: Joi.number().precision(1).min(0).max(5.0).positive().required(),
   learningCenterId: Joi.number().positive().required(),
   userId: Joi.number().positive().required()
 });
 
 const updateCommentValidation = Joi.object({
-  comment: Joi.string(),
-  star: Joi.number().precision(2).positive(),
-  learningCenterId: Joi.number().positive(),
-  userId: Joi.number().positive()
+  comment: Joi.string().min(1),
 });
 export { createCommentValidation,updateCommentValidation };
