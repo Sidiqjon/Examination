@@ -5,63 +5,73 @@ import {
 } from "../validations/resourcesCategory.validation.js";
 import { Op } from "sequelize";
 import { loggerError, loggerInfo } from "../logs/logger.js";
+import fs from "fs";
+import path from "path";
+
+const deleteOldImage = (imgPath) => {
+  if (imgPath) {
+    const fullPath = path.join("uploads", imgPath);
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
+    }
+  }
+};
 
 async function findAll(req, res) {
   try {
-    let all = await ResourceCategory.findAll();
+    let all = await ResourceCategory.findAll({include: {all: true}});
 
     if (all.length === 0) {
       loggerError.error(
-        `ERROR: No information available.;  Method: ${req.method};  ResourceCategory-FindAll`
+        `ERROR: Resource Category Not Found;  Method: ${req.method};  ResourceCategory-FindAll`
       );
-      return res.status(401).json({ error: "No information available." });
+      return res.status(404).json({ error: "Resource Categories Not Found" });
     }
 
     loggerInfo.info(
-      `Method: ${req.method};  Saccessfully FindAll ResourceCategory;`
+      `Method: ${req.method};  Successfully FindAll ResourceCategory;`
     );
-    res.status(201).send({ all });
+    res.status(201).json({ data: all });
   } catch (e) {
     loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  ResourceCategory-FindAll`
+      `ERROR: ${e.message};  Method: ${req.method};  ResourceCategory-FindAll`
     );
-    res.status(401).json({ e });
+    res.status(500).json({ error: e.message });
   }
 }
 
 async function findOne(req, res) {
   try {
     let { id } = req.params;
-    let one = await ResourceCategory.findOne({ where: { id } });
+    let one = await ResourceCategory.findByPk( id, {include: {all: true}});
 
     if (!one) {
       loggerError.error(
         `ERROR: User Not Found.;  Method: ${req.method};  ResourceCategory-FindOne`
       );
-      return res.status(401).json({ error: "User Not Found" });
+      return res.status(404).json({ error: "Resource Category Not Found" });
     }
 
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully FindOne ResourceCategory;`
     );
-    res.status(201).json({ one });
-  } catch (e) {
+    res.status(201).json({ data: one });
+  } catch (e) { 
     loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  ResourceCategory-FindOne`
+      `ERROR: ${e.message};  Method: ${req.method};  ResourceCategory-FindOne`
     );
-    res.status(401).json({ e });
+    res.status(500).json({ error: e.message });
   }
 }
 
 async function create(req, res) {
   try {
     let { error, value } = ResourcesCategoryValidation.validate(req.body);
-
     if (error) {
       loggerError.error(
         `ERROR: ${error.details[0].message};  Method: ${req.method};  ResourceCategory-Create`
       );
-      return res.json({ error: error.details[0].message });
+      return res.status(401).json({ error: error.details[0].message });
     }
 
     let check = await ResourceCategory.findOne({
@@ -70,11 +80,11 @@ async function create(req, res) {
 
     if (check) {
       loggerError.error(
-        `ERROR: Bunday Namelik Resouces Category mavjud;  Method: ${req.method};  ResourceCategory-Create`
+        `ERROR: Category with this name already exists;  Method: ${req.method};  ResourceCategory-Create`
       );
       return res
-        .status(401)
-        .json({ error: "Bunday Namelik Resouces Category mavjud" });
+        .status(409)
+        .json({ error: "Category with this name already exists" });
     }
 
     await ResourceCategory.create(value);
@@ -82,12 +92,12 @@ async function create(req, res) {
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully Create ResourceCategory;`
     );
-    res.status(201).json({ data: "Created  Successfully" });
+    res.status(201).json({ data: "Resource Category Created  Successfully" });
   } catch (e) {
     loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  ResourceCategory-Create`
+      `ERROR: ${e.message};  Method: ${req.method};  ResourceCategory-Create`
     );
-    res.status(401).json({ e });
+    res.status(500).json({ error: e.message });
   }
 }
 
@@ -99,26 +109,12 @@ async function update(req, res) {
 
     if (!check) {
       loggerError.error(
-        `ERROR: Resources Not Found;  Method: ${req.method};  ResourceCategory-Update`
+        `ERROR: Resources Category Not Found;  Method: ${req.method};  ResourceCategory-Update`
       );
-      return res.status(401).json({ error: "Resources Not Found" });
+      return res.status(404).json({ error: "Resources category Not Found" });
     }
 
     let { error, value } = ResourcesCategoryPatchValidation.validate(req.body);
-
-    if (value.name) {
-      let check = await ResourceCategory.findOne({
-        where: { name: value.name },
-      });
-      if (check) {
-        loggerError.error(
-          `ERROR: Bunday Namelik Resouces Category mavjud;  Method: ${req.method};  ResourceCategory-Update`
-        );
-        return res
-          .status(401)
-          .json({ error: "Bunday Namelik Resouces Category mavjud" });
-      }
-    }
 
     if (error) {
       loggerError.error(
@@ -127,17 +123,33 @@ async function update(req, res) {
       return res.status(401).json({ error: error.details[0].message });
     }
 
+    if (value.name) {
+      let check = await ResourceCategory.findOne({
+        where: { name: value.name },
+      });
+      if (check) {
+        loggerError.error(
+          `ERROR: Category with this name already exists;  Method: ${req.method};  ResourceCategory-Update`
+        );
+        return res.status(401).json({ error: "Category with this name already exists" });
+      }
+    }
+
+    if (value.img) {
+      deleteOldImage(check.img);
+    }
+
     await ResourceCategory.update(value, { where: { id } });
 
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully Update ResourceCategory;`
     );
-    res.status(201).json({ data: "Update Successfully" });
+    res.status(201).json({ data: "Resource Category Updated Successfully" });
   } catch (e) {
     loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  ResourceCategory-Update`
+      `ERROR: ${e.message};  Method: ${req.method};  ResourceCategory-Update`
     );
-    res.status(401).json({ e });
+    res.status(500).json({ error: e.message });
   }
 }
 
@@ -148,9 +160,13 @@ async function remove(req, res) {
 
     if (!check) {
       loggerError.error(
-        `ERROR: Resources Not Found;  Method: ${req.method};  ResourceCategory-Delete`
+        `ERROR: Resource Category Not Found;  Method: ${req.method};  ResourceCategory-Delete`
       );
-      return res.status(401).json({ error: "Resources Not Found" });
+      return res.status(401).json({ error: "Resource Category Not Found" });
+    }
+
+    if (check.img) {
+      deleteOldImage(check.img);
     }
 
     await ResourceCategory.destroy({ where: { id } });
@@ -158,12 +174,12 @@ async function remove(req, res) {
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully Delete ResourceCategory;`
     );
-    res.status(201).json({ data: "Delete Successfully" });
+    res.status(201).json({ data: "Resource Category Deleted Successfully" });
   } catch (e) {
     loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  ResourceCategory-Delete`
+      `ERROR: ${e.message};  Method: ${req.method};  ResourceCategory-Delete`
     );
-    res.status(401).json({ e });
+    res.status(500).json({ error: e.message });
   }
 }
 
@@ -176,11 +192,10 @@ async function Search(req, res) {
       take = parseInt(take, 10) || 10;
 
       let offset = (page - 1) * take;
-
       let categories = await ResourceCategory.findAndCountAll({
         limit: take,
         offset: offset,
-      });
+        include: {all: true}});
 
       return res.status(200).json({
         totalItems: categories.count,
@@ -212,12 +227,21 @@ async function Search(req, res) {
     let results = await ResourceCategory.findAll({
       where: conditions,
       order: order.length > 0 ? order : [["id", "ASC"]],
+      include: {all: true},
     });
+    
+    if (results.length > 0) {
+      loggerInfo.info(
+        `Method: ${req.method};  Saccessfully Search ResourceCategory; data: ${results}`
+      );
+      return res.status(200).json({ data: results });
+    }
 
-    loggerInfo.info(
-      `Method: ${req.method};  Saccessfully Search ResourceCategory; data: ${results}`
+    loggerError.error(
+      `ERROR: Resource Category Not Found;  Method: ${req.method};  ResourceCategory-Search`
     );
-    res.json(results);
+    return res.status(404).json({ error: "Resource Category Not Found" });
+
   } catch (e) {
     loggerError.error(
       `ERROR: ${e};  Method: ${req.method};  ResourceCategory-Search`

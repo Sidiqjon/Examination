@@ -1,51 +1,59 @@
 import Profession from "../models/profession.model.js";
-import {
-  ProfessionPatchValidation,
-  ProfessionValidation,
-} from "../validations/profession.validation.js";
+import { ProfessionValidation, ProfessionPatchValidation } from "../validations/profession.validation.js";
 import { Op } from "sequelize";
+import fs from "fs";
+import path from "path";
 import { loggerError, loggerInfo } from "../logs/logger.js";
+
+const deleteOldImage = (imgPath) => {
+  if (imgPath) {
+    const fullPath = path.join("uploads", imgPath);
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
+    }
+  }
+};
 
 async function findAll(req, res) {
   try {
-    let all = await Profession.findAll({});
+    let all = await Profession.findAll({include: {all: true}});
 
     if (all.length === 0) {
       loggerError.error(
         `ERROR: No information available.;  Method: ${req.method};  Profession-FindAll`
       );
-      return res.status(401).json({ error: "No information available." });
+      return res.status(404).json({ error: "No information available." });
     }
 
     loggerInfo.info(`Method: ${req.method};  Saccessfully FindAll Profession;`);
-    res.status(201).send({ data: all });
+    res.status(200).send({ message: "All professions:", data: all });
   } catch (e) {
     loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  Profession-FindAll`
+      `ERROR: ${e.message};  Method: ${req.method};  Profession-FindAll`
     );
-    res.status(401).json({ error: e });
+    res.status(500).json({ error: e.message });
   }
 }
 
 async function findOne(req, res) {
   try {
     let { id } = req.params;
-    let one = await Profession.findOne({ where: { id } });
+    let one = await Profession.findByPk(id, {include: {all: true}});
 
     if (!one) {
       loggerError.error(
         `ERROR: Profession Not Found;  Method: ${req.method};  Profession-FindOne`
       );
-      return res.status(401).json({ error: "Profession Not Found" });
+      return res.status(404).json({ error: "Profession Not Found" });
     }
 
     loggerInfo.info(`Method: ${req.method};  Saccessfully FindOne Profession;`);
-    res.status(201).json({ one });
+    res.status(200).json({ data: one });
   } catch (e) {
     loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  Profession-FindOne`
+      `ERROR: ${e.message};  Method: ${req.method};  Profession-FindOne`
     );
-    res.status(401).json({ e });
+    res.status(500).json({ error: e.message });
   }
 }
 
@@ -56,7 +64,7 @@ async function create(req, res) {
       loggerError.error(
         `ERROR: ${error.details[0].message};  Method: ${req.method};  Profession-Create`
       );
-      return res.json({ error: error.details[0].message });
+      return res.status(400).json({ error: error.details[0].message });
     }
 
     let check = await Profession.findOne({ where: { name: value.name } });
@@ -65,7 +73,7 @@ async function create(req, res) {
       loggerError.error(
         `ERROR: Such a profession exists;  Method: ${req.method};  Profession-Create`
       );
-      return res.status(401).json({ error: "Such a profession exists" });
+      return res.status(404).json({ error: "Such a profession already exists" });
     }
 
     
@@ -75,12 +83,12 @@ async function create(req, res) {
     loggerInfo.info(
       `Method: Created Successfully;  Saccessfully Create Profession;`
     );
-    res.status(201).json({ data: "Created  Successfully" });
+    res.status(201).json({ data: "New Profession Created  Successfully" });
   } catch (e) {
     loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  Profession-Create`
+      `ERROR: ${e.message};  Method: ${req.method};  Profession-Create`
     );
-    res.status(401).json({ e });
+    res.status(500).json({ error: e.message });
   }
 }
 
@@ -88,16 +96,20 @@ async function update(req, res) {
   try {
     let { id } = req.params;
 
-    let check = await Profession.findOne({ where: { id } });
+    let check = await Profession.findByPk(id);
 
     if (!check) {
       loggerError.error(
         `ERROR: Profession Not Found;  Method: ${req.method};  Profession-Update`
       );
-      return res.status(401).json({ error: "Profession Not Found" });
+      return res.status(404).json({ error: "Profession Not Found" });
     }
 
     let { error, value } = ProfessionPatchValidation.validate(req.body);
+
+    if (value.img) {
+      deleteOldImage(check.img);
+    }
 
     if (value.name) {
       let checkP = await Profession.findOne({ where: { name: value.name } });
@@ -105,7 +117,7 @@ async function update(req, res) {
         loggerError.error(
           `ERROR: Such a profession exists;  Method: ${req.method};  Profession-Update`
         );
-        return res.status(401).json({ error: "Such a profession exists" });
+        return res.status(400).json({ error: "Such a profession already exists" });
       }
     }
 
@@ -113,17 +125,17 @@ async function update(req, res) {
       loggerError.error(
         `ERROR: ${error.details[0].message};  Method: ${req.method};  Profession-Update`
       );
-      return res.status(401).json({ error: error.details[0].message });
+      return res.status(400).json({ error: error.details[0].message });
     }
 
     await Profession.update(value, { where: { id } });
     loggerInfo.info(`Method: ${req.method} Created Profession Successfully;`);
-    res.status(201).json({ data: "Update Successfully" });
+    res.status(200).json({ data: "Profession Update Successfully" });
   } catch (e) {
     loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  Profession-Update`
+      `ERROR: ${e.message};  Method: ${req.method};  Profession-Update`
     );
-    res.status(401).json({ error: e.message });
+    res.status(500).json({ error: e.message });
   }
 }
 
@@ -136,18 +148,22 @@ async function remove(req, res) {
       loggerError.error(
         `ERROR: Profession Not Found;  Method: ${req.method};  Profession-Delete`
       );
-      return res.status(401).json({ error: "Profession Not Found" });
+      return res.status(404).json({ error: "Profession Not Found" });
     }
 
     await Profession.destroy({ where: { id } });
+    if (check.img) {
+      deleteOldImage(check.img);
+    }
+
     loggerInfo.info(`Method: ${req.method} Delete Profession Successfully;`);
 
-    res.status(201).json({ data: "Delete Successfully" });
+    res.status(200).json({ data: "Profession Deleted Successfully" });
   } catch (e) {
     loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  Profession-Delete`
+      `ERROR: ${e.message};  Method: ${req.method};  Profession-Delete`
     );
-    res.status(401).json({ e });
+    res.status(500).json({ error: e.message });
   }
 }
 
@@ -155,7 +171,7 @@ async function Search(req, res) {
   try {
     let { page, take } = req.query;
 
-    if (page || take) {
+    if (page) {
       page = parseInt(page, 10) || 1;
       take = parseInt(take, 10) || 10;
 
@@ -202,10 +218,15 @@ async function Search(req, res) {
       `Method: ${req.method} Search Profession Successfully; data: ${results}`
     );
 
-    res.json(results);
+    if (results.length > 0) {
+      return res.status(200).json({ data: results });
+    }
+
+    return res.status(404).json({ error: "Professions Not Found with the provided query!" });
+
   } catch (e) {
     loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  Profession-Search`
+      `ERROR: ${e.message};  Method: ${req.method};  Profession-Search`
     );
     res.send({ e: e.message });
   }

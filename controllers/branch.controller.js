@@ -1,192 +1,220 @@
 import Branch from "../models/branch.model.js";
-import {
-
-  BranchPatchValidation,
-  BreanchValidation,
-} from "../validations/branch.validation.js";
-import Region from "../models/region.model.js";
 import LearningCenter from "../models/learningCenter.model.js";
+import Region from "../models/region.model.js";
 import { Op } from "sequelize";
+import fs from "fs";
+import path from "path";
+import { BranchValidation, BranchPatchValidation } from "../validations/branch.validation.js";
+
+const deleteOldImage = (imgPath) => {
+  if (imgPath) {
+    const fullPath = path.join("uploads", imgPath);
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
+    }
+  }
+};
 
 async function findAll(req, res) {
   try {
-    let all = await Branch.findAll({
+    const { page, take = 5, sortField, sortOrder, ...filters } = req.query;
+
+    let whereClause = {};
+    let orderClause = [["id", "ASC"]];
+
+    Object.keys(filters).forEach((key) => {
+      whereClause[key] = { [Op.like]: `%${filters[key]}%` };
+    });
+
+    if (sortField && sortOrder) {
+      orderClause = [[sortField, sortOrder.toUpperCase()]];
+    }
+
+    let offset = 0;
+    let limit = null;
+    if (page) {
+      offset = (parseInt(page, 10) - 1) * parseInt(take, 10);
+      limit = parseInt(take, 10);
+    }
+
+    const { count, rows } = await Branch.findAndCountAll({
+      where: whereClause,
+      order: orderClause,
+      limit: limit,
+      offset: offset,
       include: [
         {
           model: Region,
-          attributes: ["id", "name"],
         },
         {
           model: LearningCenter,
-          attributes: ["id", "firstName", "lastName", "role"],
-        }
+        },
       ],
     });
 
-    res.status(201).send({ data: all });
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "No branches found." });
+    }
+
+    res.status(200).json({
+      totalItems: count,
+      totalPages: limit ? Math.ceil(count / limit) : 1,
+      currentPage: page ? parseInt(page, 10) : 1,
+      data: rows,
+    });
   } catch (e) {
-    res.status(401).json({ error: e });
+    res.status(500).json({ error: e.message });
   }
 }
 
 async function findOne(req, res) {
   try {
-    let { id } = req.params;
-    let one = await Branch.findOne({
+    const { id } = req.params;
+    const branch = await Branch.findOne({
       where: { id },
       include: [
         {
           model: Region,
-          attributes: ["id", "name"], 
         },
         {
           model: LearningCenter,
-          attributes: ["id", "firstName", "lastName", "role"],
         },
       ],
     });
 
-    if (!one) {
-      return res.status(401).json({ error: "Region Not Found" });
+    if (!branch) {
+      return res.status(404).json({ error: "Branch not found." });
     }
 
-    res.status(201).json({ data: one });
+    res.status(200).json({ data: branch });
   } catch (e) {
-    res.status(401).json({ error: e });
+    res.status(500).json({ error: e.message });
   }
 }
 
 async function create(req, res) {
   try {
-       let { error, value } = BreanchValidation.validate(req.body);
+    const { name, phoneNumber, img, address, regionId, learningCenterId } = req.body;
+    
+    let checkLC = await LearningCenter.findByPk(learningCenterId)
+    let checkRegion = await Region.findByPk(regionId)
 
-    let LcField = value.lcfield || [];
-
-    for (let e of LcField) {
-      let check = await Field.findOne({ where: { id: e } });
-
-      if (!check) {
-        return res
-          .status(401)
-          .json({ error: "There are no such IDs in the Field table!" });
-      }
-
+    if (checkLC.createdBy != req.user.id && req.user.role != "admin") {
+      return res.status(401).json({ message: "You Are Not Allowed!" })
     }
 
-    let newLc = await Branch.create(value);
+    if (!checkLC) {
+      return res.status(404).json({ error: "The Learnig Center with the provided 'ID' Does Not exist!" });
+    }
 
-    LcField.forEach(async (e)=> {
-      await LCField.create({fieldId: e, learningCenterId: newLc.id})
-    })
+    if (!checkRegion) {
+      return res.status(404).json({ error: "The Region with the provided 'ID' Does Not exist!" });
+    }
 
-    res.status(201).json({ message: "Created Succesfully" });
+    if (name) {
+      let checkName = await Branch.findOne({ where: { name } });    
+      if (checkName) {
+        return res.status(400).json({ error: "Branch with this name already exists" });
+      }
+    }
+
+    let { error, value } = BranchValidation.validate(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+
+    const newBranch = await Branch.create(value);
+
+    let branchNumber = checkLC.branchNumber + 1
+    await checkLC.update({ branchNumber })
+
+    res.status(201).json({ message: "Branch created successfully.", data: newBranch });
   } catch (e) {
-    res.status(401).json({ error: e.message });
+    res.status(500).json({ error: e.message });
   }
 }
 
 async function update(req, res) {
   try {
-    let { id } = req.params;
+    const { id } = req.params;
+    const { img, regionId, learningCenterId, ...updateData } = req.body;
 
-    let check = await Branch.findOne({ where: { id } });
-
-    if (!check) {
-      return res.status(401).json({ error: "Learning Center Not Found" });
+    const branch = await Branch.findOne({ where: { id } });
+    if (!branch) {
+      return res.status(404).json({ error: "Branch not found." });
     }
 
-    let { error, value } = BreanchPatchValidation.validate(req.body);
+    let LC = await LearningCenter.findByPk(branch.learningCenterId)
+    
+    if (LC.createdBy != req.user.id && req.user.role != "admin") {
+      return res.status(401).json({ message: "You Are Not Allowed!" })
+    }
 
+    let { error, value } = BranchPatchValidation.validate(req.body);
     if (error) {
-      return res.status(401).json({ error: error.details[0].message });
+      return res.status(400).json({ message: error.details[0].message });
     }
-    console.log(check);
 
-    // await LearningCenter.update(value, { where: { id } });
-    // res.status(201).json({ data: "Update Successfully" });
+    if (learningCenterId) {
+      let checkLC = await LearningCenter.findByPk(learningCenterId)
+      if (!checkLC) {
+        return res.status(404).json({ error: "The Learnig Center with the provided 'ID' Does Not exist!" });
+      }
+    }
+
+    if (regionId) {
+      let checkRegion = await Region.findByPk(regionId)
+      if (!checkRegion) {
+        return res.status(404).json({ error: "The Region with the provided 'ID' Does Not exist!" });
+      }
+    }
+
+    if (req.body.name) {
+      let checkName = await Branch.findOne({ where: { name: req.body.name } });    
+      if (checkName) {
+        return res.status(400).json({ error: "Branch with this name already exists" });
+      }
+    }
+
+    if (img) {
+      deleteOldImage(branch.img);
+    }
+
+    await Branch.update(value, { where: { id } });
+    res.status(200).json({ message: "Branch updated successfully." });
+
   } catch (e) {
-    res.status(401).json({ e });
+    res.status(500).json({ error: e.message });
   }
 }
 
 async function remove(req, res) {
   try {
-    let { id } = req.params;
-    let check = await Branch.findOne({ where: { id } });
+    const { id } = req.params;
 
-    if (!check) {
-      return res.status(401).json({ error: "Resources Not Found" });
+    const branch = await Branch.findOne({ where: { id } });
+
+    if (!branch) {
+      return res.status(404).json({ error: "Branch not found." });
     }
+
+    const LC = await LearningCenter.findByPk(branch.learningCenterId)
+    
+    if (LC.createdBy != req.user.id && req.user.role != "admin") {
+      return res.status(401).json({ message: "You Are Not Allowed!" })
+    }
+
+    deleteOldImage(branch.img);
 
     await Branch.destroy({ where: { id } });
-    res.status(201).json({ data: "Delete Successfully" });
+
+    let branchNumber = LC.branchNumber - 1
+    await LC.update({ branchNumber })
+
+    res.status(200).json({ message: "Branch deleted successfully." });
   } catch (e) {
-    res.status(401).json({ e });
+    res.status(500).json({ error: e.message });
   }
 }
 
-async function Search(req, res) {
-  try {
-    console.log("conditions");
-    let { page, take } = req.query;
-
-    if (page || take) {
-      page = parseInt(page, 10) || 1;
-      take = parseInt(take, 10) || 10;
-
-      let offset = (page - 1) * take;
-
-      let categories = await Branch.findAndCountAll({
-        limit: take,
-        offset: offset,
-      });
-
-      return res.status(200).json({
-        totalItems: categories.count,
-        totalPages: Math.ceil(categories.count / take),
-        currentPage: page,
-        data: categories.rows,
-      });
-    }
-
-    let query = req.query;
-    let conditions = {};
-    let order = [];
-
-    Object.keys(query).forEach((key) => {
-      if (key !== "sortField" && key !== "sortOrder") {
-        conditions[key] = {
-          [Op.like]: `%${query[key]}%`,
-        };
-      }
-    });
-
-    if (query.sortField && query.sortOrder) {
-      const sortField = query.sortField;
-      const sortOrder =
-        query.sortOrder.toUpperCase() === "DESC" ? "DESC" : "ASC";
-      order.push([sortField, sortOrder]);
-    }
-
-    let results = await Branch.findAll({
-      where: conditions,
-      order: order.length > 0 ? order : [["id", "ASC"]],
-      include: [
-        {
-          model: Region,
-          attributes: ["id", "name"],
-        },
-        {
-          model: LearningCenter,
-          attributes: ["id", "firstName", "lastName", "role"],
-        },
-      ],
-    });
-
-    res.json(results);
-  } catch (e) {
-    res.send({ e: e.message });
-  }
-}
-
-export { findAll, findOne, create, update, remove, Search };
+export { findAll, findOne, create, update, remove };

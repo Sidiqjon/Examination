@@ -168,7 +168,6 @@ async function update(req, res) {
       );
       return res.status(404).json({ error: "Learning Center Not Found" });
     }
-
     let { error, value } = LearningCenterPatchValidation.validate(req.body);
 
     if (error) {

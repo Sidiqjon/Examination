@@ -23,9 +23,8 @@ const authorization = (roles) => (req, res, next) => {
             res.status(401).json({ message: "You Are Not Allowed!" })
         }
     } catch (error) {
-        res.status(400).json({ message: "Something is wrong!", data: error.message })
+        res.status(401).json({ message: "Something is wrong!", data: error.message })
     }
 }
 
 export default authorization
-
