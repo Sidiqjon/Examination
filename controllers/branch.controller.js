@@ -42,15 +42,7 @@ async function findAll(req, res) {
       order: orderClause,
       limit: limit,
       offset: offset,
-      include: [
-        {
-          model: Region,
-        },
-        {
-          model: LearningCenter,
-        },
-      ],
-    });
+      include: {all: true},});
 
     if (rows.length === 0) {
       return res.status(404).json({ error: "No branches found." });
@@ -72,15 +64,7 @@ async function findOne(req, res) {
     const { id } = req.params;
     const branch = await Branch.findOne({
       where: { id },
-      include: [
-        {
-          model: Region,
-        },
-        {
-          model: LearningCenter,
-        },
-      ],
-    });
+      include: {all: true},});
 
     if (!branch) {
       return res.status(404).json({ error: "Branch not found." });

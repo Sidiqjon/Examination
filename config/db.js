@@ -5,6 +5,7 @@ let db = new Sequelize ({
     host: "localhost",
     username: "root",
     password: "yusuf777$",
+    timezone: "+05:00",
     dialect: "mysql",
     logging: false,
 })

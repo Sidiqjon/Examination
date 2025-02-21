@@ -17,6 +17,10 @@ async function findAll(req, res) {
     let all = await LearningCenter.findAll({
       include: [
         {
+          model: Branch,
+          attributes: [ "id", "name", "img", "regionId", "phoneNumber", "address",],
+        },
+        {
           model: Region,
           attributes: ["id", "name"],
         },
@@ -34,9 +38,8 @@ async function findAll(req, res) {
         },
         {
           model: Comment,
-          attributes: ["id", "comment","userId", "star"],
+          attributes: ["id", "comment", "userId", "star"],
         },
-
       ],
     });
 
@@ -68,6 +71,10 @@ async function findOne(req, res) {
       where: { id },
       include: [
         {
+          model: Branch,
+          attributes: [ "id", "name", "img", "regionId", "phoneNumber", "address",],
+        },
+        {
           model: Region,
           attributes: ["id", "name"],
         },
@@ -85,7 +92,7 @@ async function findOne(req, res) {
         },
         {
           model: Comment,
-          attributes: ["id", "comment","userId", "star"],
+          attributes: ["id", "comment", "userId", "star"],
         },
       ],
     });
@@ -113,13 +120,27 @@ async function findOne(req, res) {
 
 async function create(req, res) {
   try {
+    req.body.userId = req.user.id;
     let { error, value } = LearningCenterValidation.validate(req.body);
 
     if (error) {
       loggerError.error(
         `ERROR: ${error.details[0].message};  Method: ${req.method};  LearningCenter-Create`
       );
-      return res.status(401).json({ error: error.details[0].message });
+      return res.status(400).json({ error: error.details[0].message });
+    }
+
+    let checkName = await LearningCenter.findOne({
+      where: { name: value.name },
+    });
+
+    if (checkName) {
+      loggerError.error(
+        `There is a learning center with this name;  Method: ${req.method};  LearningCenter-Create`
+      );
+      return res
+        .status(409)
+        .json({ error: "There is a learning center with this name." });
     }
 
     let LcField = value.lcfield || [];
@@ -132,7 +153,7 @@ async function create(req, res) {
           `There are no such IDs in the Field table!;  Method: ${req.method};  LearningCenter-Create`
         );
         return res
-          .status(401)
+          .status(404)
           .json({ error: "There are no such IDs in the Field table!" });
       }
     }
@@ -152,7 +173,7 @@ async function create(req, res) {
       `ERROR: ${e};  Method: ${req.method};  LearningCenters-Create`
     );
 
-    res.status(401).json({ error: e.message });
+    res.status(500).json({ error: e.message });
   }
 }
 
@@ -218,13 +239,11 @@ async function remove(req, res) {
 
 async function Search(req, res) {
   try {
-    console.log("conditions");
-    let { page, take } = req.query;
+    let { page, take, regionId } = req.query;
 
     if (page || take) {
       page = parseInt(page, 10) || 1;
       take = parseInt(take, 10) || 10;
-
       let offset = (page - 1) * take;
 
       let categories = await LearningCenter.findAndCountAll({
@@ -245,12 +264,20 @@ async function Search(req, res) {
     let order = [];
 
     Object.keys(query).forEach((key) => {
-      if (key !== "sortField" && key !== "sortOrder") {
+      if (key !== "sortField" && key !== "sortOrder" && key !== "regionId") {
         conditions[key] = {
           [Op.like]: `%${query[key]}%`,
         };
       }
     });
+
+    console.log(regionId);
+    if (regionId) {
+      let regionIds = Array.isArray(regionId) ? regionId : [regionId];
+      conditions.regionId = {
+        [Op.in]: regionIds.map((id) => parseInt(id, 10)),
+      };
+    }
 
     if (query.sortField && query.sortOrder) {
       const sortField = query.sortField;
@@ -268,6 +295,17 @@ async function Search(req, res) {
           attributes: ["id", "name"],
         },
         {
+          model: Branch,
+          attributes: [
+            "id",
+            "name",
+            "img",
+            "regionId",
+            "phoneNumber",
+            "address",
+          ],
+        },
+        {
           model: User,
           attributes: ["id", "firstName", "lastName", "role"],
         },
@@ -281,13 +319,13 @@ async function Search(req, res) {
         },
         {
           model: Comment,
-          attributes: ["id", "comment","userId", "star"],
+          attributes: ["id", "comment", "userId", "star"],
         },
       ],
     });
 
     loggerInfo.info(
-      `Method: ${req.method};  Saccessfully Search LearningCenter; data: ${results}`
+      `Method: ${req.method};  Successfully Search LearningCenter; data: ${results}`
     );
     res.status(201).json({ data: results });
   } catch (e) {

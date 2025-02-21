@@ -16,14 +16,14 @@ async function findAll(req, res) {
     }
     res.status(200).send({ data: allComments });
   } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
+    res.status(500).send({ error: e.message });
   }
 }
 
 async function findOne(req, res) {
   try {
     const { id } = req.params;
-    const comment = await Comment.findOne({ where: { id } });
+    const comment = await Comment.findByPk(id, { include: { all: true } });
 
     if (!comment) {
       return res.status(404).send({ error: "Comment Not Found" });
@@ -31,23 +31,24 @@ async function findOne(req, res) {
 
     res.status(200).send({ data: comment });
   } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
+    res.status(500).send({ error: e.message });
   }
 }
 
 async function create(req, res) {
   try {
+    req.body.userId = req.user.id;
     const { error, value } = createCommentValidation.validate(req.body);
     if (error) {
       return res
-        .status(404)
+        .status(400)
         .json({ error: `Validation error: ${error.details[0].message}` });
     }
 
     const user = await User.findOne({ where: { id: value.userId } });
     if (!user) {
       return res
-        .status(404)
+        .status(400)
         .json({ error: "Invalid userId: No such User exists" });
     }
 
@@ -55,15 +56,21 @@ async function create(req, res) {
       where: { id: value.learningCenterId },
     });
     if (!learningCenter) {
-      return res.status(404).json({
+      return res.status(400).json({
         error: "Invalid learningCenterId: No such Learning Center exists",
       });
     }
 
+    if (req.user.id != value.userId) {
+      return res
+        .status(403)
+        .json({ error: "You cannot comment on behalf of another person." });
+    }
+
     await Comment.create(value);
-    res.status(201).send({ message: "Comment Sendet Successfully" });
+    res.status(201).send({ message: "Comment Posted Successfully!" });
   } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
+    res.status(500).send({ error: e.message });
   }
 }
 
@@ -82,11 +89,17 @@ async function update(req, res) {
         .json({ error: `Validation error: ${error.details[0].message}` });
     }
 
+    if (comment.userId != req.user.id) {
+      return res
+        .status(403)
+        .json({ error: "You cannot comment on behalf of another person." });
+    }
+
     await Comment.update(value, { where: { id } });
 
     res.status(200).send({ message: "Comment Updated Successfully" });
   } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
+    res.status(500).send({ error: e.message });
   }
 }
 
@@ -99,17 +112,22 @@ async function remove(req, res) {
       return res.status(404).json({ error: "Comment Not Found" });
     }
 
+    if (req.user.id != comment.userId) {
+      return res
+        .status(403)
+        .json({ error: "You cannot delete a comment that is not yours." });
+    }
+
     await Comment.destroy({ where: { id } });
     res.status(200).send({ message: "Comment Deleted Successfully" });
   } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
+    res.status(500).send({ error: e.message });
   }
 }
 
 async function Search(req, res) {
   try {
     let { page, take } = req.query;
-    console.log(req.query);
 
     if (page || take) {
       page = parseInt(page, 10) || 1;
@@ -158,6 +176,11 @@ async function Search(req, res) {
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully Search Comment; data: ${results}`
     );
+
+    if (results.length == 0) {
+      return res.status(404).json({ error: "Comment Pages Not Found" });
+    }
+
     res.status(200).json({ data: results });
   } catch (e) {
     loggerError.error(`ERROR: ${e};  Method: ${req.method};  Comment-Search`);

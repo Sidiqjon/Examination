@@ -1,4 +1,4 @@
-import UserEnrolment from "../models/userenrolment.model.js";
+import UserEnrolment from "../models/userEnrolment.model.js";
 import User from "../models/user.model.js";
 import Branch from "../models/branch.model.js";
 import LearningCenter from "../models/learningCenter.model.js";
@@ -12,24 +12,13 @@ import { loggerError, loggerInfo } from "../logs/logger.js";
 
 async function create(req, res) {
   try {
-    const { userId, branchId, learningCenterId } = req.body;
+    const { userId, branchId, learningCenterId, status } = req.body;
 
     let userExists = await User.findByPk(userId);
     if (!userExists) {
       return res
         .status(400)
         .json({ error: "Invalid userId: User does not exist" });
-    }
-
-    if (!branchId && !learningCenterId) {
-      return res.status(400).json({
-        error: "Either branchId or learningCenterId must be provided",
-      });
-    }
-    if (branchId && learningCenterId) {
-      return res.status(400).json({
-        error: "Only one of learningCenterId or branchId should be provided.",
-      });
     }
 
     if (branchId) {
@@ -78,6 +67,8 @@ async function create(req, res) {
     res.status(500).send({ error: "Internal Server Error" });
   }
 }
+
+
 
 async function remove(req, res) {
   try {

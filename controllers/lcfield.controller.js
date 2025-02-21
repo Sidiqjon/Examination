@@ -3,7 +3,8 @@ import Field from "../models/field.model.js";
 import Region from "../models/region.model.js";
 import User from "../models/user.model.js";
 import LCfield from "../models/lcfields.model.js";
-import {loggerError,loggerInfo} from "../logs/logger.js"
+import { loggerError, loggerInfo } from "../logs/logger.js";
+import { Op } from "sequelize";
 
 async function create(req, res) {
   try {
@@ -68,42 +69,25 @@ async function create(req, res) {
 
 async function remove(req, res) {
   try {
-    let { fields } = req.body;
+    let { learningCenterId, fieldId } = req.body;
 
-    let learningCenterIds = fields.map((item) => item.learningCenterId);
-    let FieldID = fields.map((item) => item.fieldId);
+    let center = await LearningCenter.findByPk(learningCenterId);
 
-    let check = await LearningCenter.findAll({
-      where: { id: learningCenterIds },
-      include: [
-        {
-          model: Region,
-          attributes: ["id", "name"],
-        },
-        {
-          model: User,
-          attributes: ["id", "firstName", "lastName", "role"],
-        },
-        {
-          model: Field,
-          attributes: ["id", "name", "professionId", "subjectId"],
-        },
-      ],
-    });
-
-    if (!check) {
-      loggerError.error(
-        `ERROR: Learnign Center Not Found!;  Method: ${req.method};  LearningCenterField-Delete`
-      );
-      return res.status(404).json({ error: "Learnign Center Not Found!" });
+    if (!center) {
+      return res.status(404).json({ error: "Not Found learningCenterId" });
     }
-
-    await Field.destroy({ where: { id: FieldID } });
-
+    
+    for (let field of fieldId) {
+      let del = await LCfield.destroy({
+        where: { [Op.and]: [{ learningCenterId }, { fieldId }] },
+      });
+    }
+    
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully Delete LearningCenterField;`
     );
-    res.status(200).json({ message: "Delete Successfully" });
+    res.status(200).json({data: "Deleted"})
+
   } catch (e) {
     loggerError.error(
       `ERROR: ${e};  Method: ${req.method};  LearningCentersField-Delete`

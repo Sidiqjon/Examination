@@ -6,7 +6,7 @@ const ResourcesValidation = joi.object({
   media: joi.string().required(),
   description: joi.string().min(2).required(),
   createdBy: joi.number().positive().required(),
-  resourcesCategoryId: joi.number().positive().required(),
+  categoryId: joi.number().positive().required(),
 });
 
 const ResourcesPatchValidation = joi.object({
@@ -15,7 +15,7 @@ const ResourcesPatchValidation = joi.object({
   media: joi.string(),
   description: joi.string().min(2),
   createdBy: joi.number().positive(),
-  resourcesCategoryId: joi.number().positive(),
+  categoryId: joi.number().positive(),
 });
 
 export { ResourcesValidation, ResourcesPatchValidation };
