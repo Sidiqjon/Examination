@@ -25,7 +25,7 @@ const UserEnrolment = db.define(
     },
     learningCenterId: {
       type: DataTypes.INTEGER,
-      allowNull: true, 
+      allowNull: false, 
       references: {
         model: LearningCenter,
         key: "id",
@@ -51,16 +51,6 @@ const UserEnrolment = db.define(
   },
   {
     timestamps: true,
-    validate: {
-      eitherLearningCenterOrBranch() {
-        if (!this.learningCenterId && !this.branchId) {
-          throw new Error("Either learningCenterId or branchId must be provided.");
-        }
-        if (this.learningCenterId && this.branchId) {
-          throw new Error("Only one of learningCenterId or branchId should be provided.");
-        }
-      },
-    },
   }
 );
 

@@ -1,5 +1,5 @@
 import User from "../models/user.model.js";
-import UserEnrolment from "../models/userenrolment.model.js";
+import UserEnrolment from "../models/userEnrolment.model.js";
 import Comment from "../models/comment.model.js";
 import LearningCenter from "../models/learningCenter.model.js"
 import Resource from "../models/resource.model.js" 
@@ -8,7 +8,7 @@ import { Op } from "sequelize";
 import fs from "fs";
 import path from "path";
 import { 
-  userPatchValid, 
+  userPatchValid,   
   validateEmail, 
   validatePhoneNumber, 
   validateName } from "../validations/user.validation.js";

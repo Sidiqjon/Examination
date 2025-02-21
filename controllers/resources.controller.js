@@ -70,12 +70,13 @@ async function findOne(req, res) {
 
 async function create(req, res) {
   try {
+    req.body.createdBy = req.user.id;
     let { error, value } = ResourcesValidation.validate(req.body);
     if (error) {
       loggerError.error(
         `ERROR: ${error.details[0].message};  Method: ${req.method};  Resources-Create`
       );
-      return res.status(401).json({ error: error.details[0].message });
+      return res.status(400).json({ error: error.details[0].message });
     }
 
     let check = await Resource.findOne({
@@ -137,7 +138,7 @@ async function update(req, res) {
       loggerError.error(
         `ERROR: ${error.details[0].message};  Method: ${req.method};  Resources-Update`
       );
-      return res.status(401).json({ error: error.details[0].message });
+      return res.status(400).json({ error: error.details[0].message });
     }
 
     if (value.name) {

@@ -20,10 +20,10 @@ const authorization = (roles) => (req, res, next) => {
         if (roles.includes(data.role)) {
             next()
         } else {
-            res.status(401).json({ message: "You Are Not Allowed!" })
+            res.status(403).json({ message: "You Are Not Allowed!" })
         }
     } catch (error) {
-        res.status(401).json({ message: "Something is wrong!", data: error.message })
+        res.status(400).json({ message: "Something is wrong!", data: error.message })
     }
 }
 

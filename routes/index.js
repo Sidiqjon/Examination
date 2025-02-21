@@ -11,6 +11,9 @@ import addAdminRoute from "./addAdmin.routes.js"
 import uploadIMGRoute from "./uploadIMG.routes.js";
 import getAllCeoRoute from "./getAllCeo.routes.js"
 import refreshTokenRoute from "./refreshToken.routes.js"
+import studentsOfaLCRoute from "./stdentsOfaLC.routes.js"
+import getMyCentersRoute from "./myLCenters.routes.js"
+import lcRatingRoute from "./lcRating.routes.js"
 import userExcelRoute from "./excelFile.routes.js" 
 
 import routeResources from "./resources.routes.js";
@@ -22,6 +25,7 @@ import routeField from "./field.routes.js";
 import routeLearningCenter from "./learningcenter.routes.js";
 import routeLcField from "./lcfield.routes.js";
 import routeBranch from "./branch.routes.js";
+import myInfoRoute from "./myInfo.routes.js"
 
 import commentRoutes from "./comment.routes.js";  
 import regionRoutes from "./region.routes.js";  
@@ -40,6 +44,9 @@ mainRoute.use("/add-admin", addAdminRoute)
 mainRoute.use("/upload-img", uploadIMGRoute)
 mainRoute.use("/all-ceo", getAllCeoRoute)
 mainRoute.use("/refresh-token", refreshTokenRoute)
+mainRoute.use("/lc-students", studentsOfaLCRoute)
+mainRoute.use("/my-learning-centers", getMyCentersRoute)
+mainRoute.use("/lc-rating", lcRatingRoute)
 mainRoute.use("/users-excel", userExcelRoute)
 
 mainRoute.use("/resource-category", routeResourcesCategory);
@@ -51,6 +58,7 @@ mainRoute.use("/fields", routeField);
 mainRoute.use("/learning-centers", routeLearningCenter);
 mainRoute.use("/lcfields", routeLcField);
 mainRoute.use("/branches", routeBranch);
+mainRoute.use("/my-info", myInfoRoute)
 
 mainRoute.use("/comments", commentRoutes);
 mainRoute.use("/regions", regionRoutes);
