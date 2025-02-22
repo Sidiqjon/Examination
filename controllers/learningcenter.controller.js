@@ -21,6 +21,7 @@ const deleteOldImage = (imgPath) => {
   }
 };
 
+
 async function findAll(req, res) {
   try {
     let all = await LearningCenter.findAll({
