@@ -236,14 +236,14 @@ export default router;
  *       properties:
  *         name:
  *           type: string
- *           pattern: "^[a-zA-Z0-9\s]+$"
+ *           pattern: ^[a-zA-Z0-9\s]+$
  *           example: "Samarkand"
  *     RegionPatchInput:
  *       type: object
  *       properties:
  *         name:
  *           type: string
- *           pattern: "^[a-zA-Z0-9\s]+$"
+ *           pattern: ^[a-zA-Z0-9\s]+$
  *           example: "Bukhara"
  *   securitySchemes:
  *     bearerAuth:

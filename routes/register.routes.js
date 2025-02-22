@@ -42,19 +42,19 @@ export default registerRoute;
  *                 format: email
  *                 example: "johndoe@example.com"
  *                 description: Valid email address.
- *              img:
+ *               img:
  *                 type: string
  *                 format: img
  *                 example: "example.png"
- *                 description: "User's img".
+ *                 description: User's img.
  *               password:
  *                 type: string
  *                 format: password
- *                 example: "#Abcd123$"
+ *                 example: #Abcd123$
  *                 description: Strong password with uppercase, lowercase, numbers, and special characters.
  *               phoneNumber:
  *                 type: string
- *                 example: "+998900000000"
+ *                 example: +998900000000
  *                 description: Valid phone number format.
  *               role:
  *                 type: string

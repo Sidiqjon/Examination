@@ -87,7 +87,7 @@ export default router;
  *               properties:
  *                 error:
  *                   type: string
- *                   example: Invalid learningCenterId: Learning Center does not exist
+ *                   example: Learning Center does not exist
  *       409:
  *         description: User is already enrolled
  *         content:
