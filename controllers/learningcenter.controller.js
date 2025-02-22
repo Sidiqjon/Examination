@@ -21,22 +21,78 @@ const deleteOldImage = (imgPath) => {
   }
 };
 
+// async function findAll(req, res) {
+//   try {
+//     let all = await LearningCenter.findAll({
+//       attributes: {
+//         include: [
+//           [
+//             literal(`(
+//               SELECT COUNT(*) 
+//               FROM likes 
+//               WHERE likes.learningCenterId = LearningCenters.id
+//             )`),
+//             "numberOfLikes",
+//           ],
+//         ],
+//       },
+//       include: [
+//         {
+//           model: Branch,
+//           attributes: ["id", "name", "img", "regionId", "phoneNumber", "address"],
+//         },
+//         {
+//           model: Region,
+//           attributes: ["id", "name"],
+//         },
+//         {
+//           model: User,
+//           attributes: ["id", "firstName", "lastName", "role"],
+//         },
+//         {
+//           model: Field,
+//           attributes: ["id", "name", "professionId", "subjectId"],
+//         },
+//         {
+//           model: Comment,
+//           attributes: ["id", "comment", "userId", "star"],
+//         },
+//       ],
+//       subQuery: false, 
+//     });
+
+
+//     if (all.length === 0) {
+//       return res.status(404).json({ error: "Learning Centers Not Found" });
+//     }
+
+
+
+//     res.status(200).send({ data: all });
+//   } catch (e) {
+//     res.status(500).json({ error: e.message });
+//   }
+// }
+
+
+
 async function findAll(req, res) {
   try {
     let all = await LearningCenter.findAll({
       attributes: {
         include: [
           [
-            literal(`(
-              SELECT COUNT(*) 
-              FROM likes 
-              WHERE likes.learningCenterId = LearningCenters.id
-            )`),
-            "numberOfLikes",
+            fn("COUNT", col("likes.id")), 
+            "numberOfLikes"
           ],
         ],
       },
       include: [
+        {
+          model: Like, 
+          attributes: [], 
+          required: false, 
+        },
         {
           model: Branch,
           attributes: ["id", "name", "img", "regionId", "phoneNumber", "address"],
@@ -58,21 +114,28 @@ async function findAll(req, res) {
           attributes: ["id", "comment", "userId", "star"],
         },
       ],
-      subQuery: false, 
+      subQuery: false,
+      group: [
+        "learningCenter.id",
+        "branches.id",
+        "region.id",
+        "user.id",
+        "fields.id",
+        "comments.id",
+      ], // Barcha ustunlarni GROUP BY qatoriga qo‘shish!
     });
-
 
     if (all.length === 0) {
       return res.status(404).json({ error: "Learning Centers Not Found" });
     }
-
-
 
     res.status(200).send({ data: all });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
 }
+
+
 async function findOne(req, res) {
   try {
     let { id } = req.params;
@@ -82,16 +145,17 @@ async function findOne(req, res) {
       attributes: {
         include: [
           [
-            literal(`(
-              SELECT COUNT(*) 
-              FROM likes 
-              WHERE likes.learningCenterId = LearningCenters.id
-            )`),
-            "numberOfLikes",
+            fn("COUNT", col("likes.id")), 
+            "numberOfLikes"
           ],
         ],
       },
       include: [
+        {
+          model: Like, 
+          attributes: [], 
+          required: false, 
+        },
         {
           model: Branch,
           attributes: ["id", "name", "img", "regionId", "phoneNumber", "address"],
@@ -113,7 +177,15 @@ async function findOne(req, res) {
           attributes: ["id", "comment", "userId", "star"],
         },
       ],
-      subQuery: false, 
+      subQuery: false,
+      group: [
+        "learningCenter.id",
+        "branches.id",
+        "region.id",
+        "user.id",
+        "fields.id",
+        "comments.id",
+      ], 
     });
 
     if (!one) {
@@ -270,16 +342,17 @@ async function Search(req, res) {
         attributes: {
           include: [
             [
-              literal(`(
-                SELECT COUNT(*) 
-                FROM likes 
-                WHERE likes.learningCenterId = LearningCenters.id
-              )`),
-              "numberOfLikes",
+              fn("COUNT", col("likes.id")), 
+              "numberOfLikes"
             ],
           ],
         },
         include: [
+          {
+            model: Like, 
+            attributes: [], 
+            required: false, 
+          },
           {
             model: Branch,
             attributes: ["id", "name", "img", "regionId", "phoneNumber", "address"],
@@ -301,7 +374,15 @@ async function Search(req, res) {
             attributes: ["id", "comment", "userId", "star"],
           },
         ],
-        subQuery: false, 
+        subQuery: false,
+        group: [
+          "learningCenter.id",
+          "branches.id",
+          "region.id",
+          "user.id",
+          "fields.id",
+          "comments.id",
+        ], 
       });
 
       if (categories.rows.length === 0) {
@@ -349,16 +430,17 @@ async function Search(req, res) {
       attributes: {
         include: [
           [
-            literal(`(
-              SELECT COUNT(*) 
-              FROM likes 
-              WHERE likes.learningCenterId = LearningCenters.id
-            )`),
-            "numberOfLikes",
+            fn("COUNT", col("likes.id")), 
+            "numberOfLikes"
           ],
         ],
       },
       include: [
+        {
+          model: Like, 
+          attributes: [], 
+          required: false, 
+        },
         {
           model: Branch,
           attributes: ["id", "name", "img", "regionId", "phoneNumber", "address"],
@@ -380,7 +462,15 @@ async function Search(req, res) {
           attributes: ["id", "comment", "userId", "star"],
         },
       ],
-      subQuery: false, 
+      subQuery: false,
+      group: [
+        "learningCenter.id",
+        "branches.id",
+        "region.id",
+        "user.id",
+        "fields.id",
+        "comments.id",
+      ], 
     });
 
     if (results.length === 0) {
