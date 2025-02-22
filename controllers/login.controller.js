@@ -30,7 +30,7 @@ async function Login(req, res) {
             return res.status(400).json({ message: "Invalid Credentials!" });
         }
 
-        if (user.status != "active") {
+        if (user.status != "ACTIVE") {
             return res.status(400).json({ message: "Your Account is not active. Please verify your email first!" });
         }
 

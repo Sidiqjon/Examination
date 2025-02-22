@@ -174,12 +174,8 @@ INSERT INTO `subjects` (`name`, `img`) VALUES
 ('Art', 'art.jpg');
 
 
-INSERT INTO `users` (`firstName`, `lastName`, `phoneNumber`, `email`, `img`, `password`, `role`, `status`) VALUES
-('John', 'Doe', '1234567890', 'john.doe@email.com', 'john.jpg', 'password123', 'user', 'active'),
-('Jane', 'Smith', '2345678901', 'jane.smith@email.com', 'jane.jpg', 'password123', 'admin', 'inactive'),
-('Alice', 'Johnson', '3456789012', 'alice.johnson@email.com', 'alice.jpg', 'password123', 'ceo', 'active'),
-('Bob', 'Brown', '4567890123', 'bob.brown@email.com', 'bob.jpg', 'password123', 'user', 'inactive'),
-('Charlie', 'Davis', '5678901234', 'charlie.davis@email.com', 'charlie.jpg', 'password123', 'user', 'active');
+INSERT INTO `users` (`firstName`, `lastName`, `phoneNumber`, `email`, `img`, `password`, `role`, `status`, `createdAt`, `updatedAt`) VALUES
+('Ali', 'Yusuf', '+998777777777', 'yusuf@email.com', 'ali.jpg', 'Root1234!', 'ADMIN', 'ACTIVE', now(), now());
 
 
 INSERT INTO `learningCenters` (`name`, `phoneNumber`, `img`, `address`, `regionId`, `branchNumber`, `createdBy`) VALUES
