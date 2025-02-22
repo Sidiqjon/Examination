@@ -175,7 +175,7 @@ INSERT INTO `subjects` (`name`, `img`) VALUES
 
 
 INSERT INTO `users` (`firstName`, `lastName`, `phoneNumber`, `email`, `img`, `password`, `role`, `status`, `createdAt`, `updatedAt`) VALUES
-('Ali', 'Yusuf', '+998777777777', 'yusuf@email.com', 'ali.jpg', 'Root1234!', 'ADMIN', 'ACTIVE', now(), now());
+('Ali', 'Yusuf', '+998777777777', 'Ali@email.com', 'ali.jpg', 'Root1234!', 'ADMIN', 'ACTIVE', now(), now());
 
 
 INSERT INTO `learningCenters` (`name`, `phoneNumber`, `img`, `address`, `regionId`, `branchNumber`, `createdBy`) VALUES

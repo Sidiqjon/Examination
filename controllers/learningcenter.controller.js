@@ -29,8 +29,8 @@ async function findAll(req, res) {
           [
             literal(`(
               SELECT COUNT(*) 
-              FROM Likes 
-              WHERE Likes.learningCenterId = LearningCenter.id
+              FROM likes 
+              WHERE likes.learningCenterId = LearningCenter.id
             )`),
             "numberOfLikes",
           ],
@@ -84,8 +84,8 @@ async function findOne(req, res) {
           [
             literal(`(
               SELECT COUNT(*) 
-              FROM Likes 
-              WHERE Likes.learningCenterId = LearningCenter.id
+              FROM likes 
+              WHERE likes.learningCenterId = LearningCenter.id
             )`),
             "numberOfLikes",
           ],
@@ -272,8 +272,8 @@ async function Search(req, res) {
             [
               literal(`(
                 SELECT COUNT(*) 
-                FROM Likes 
-                WHERE Likes.learningCenterId = LearningCenter.id
+                FROM likes 
+                WHERE likes.learningCenterId = LearningCenter.id
               )`),
               "numberOfLikes",
             ],
