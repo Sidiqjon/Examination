@@ -25,6 +25,7 @@ export default registerRoute;
  *               - firstName
  *               - lastName
  *               - email
+ *               - img
  *               - password
  *               - phoneNumber
  *             properties:
@@ -41,6 +42,11 @@ export default registerRoute;
  *                 format: email
  *                 example: "johndoe@example.com"
  *                 description: Valid email address.
+ *              img:
+ *                 type: string
+ *                 format: img
+ *                 example: "example.png"
+ *                 description: "User's img".
  *               password:
  *                 type: string
  *                 format: password
@@ -131,4 +137,3 @@ export default registerRoute;
  *                   type: string
  *                   example: "Internal server error."
  */
-
