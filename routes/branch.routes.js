@@ -7,8 +7,8 @@ let route = Router();
 
 route.get("/", findAll);
 route.get("/:id", findOne);
-route.post("/", authentication, authorization(["admin", "ceo"]), create);
-route.patch("/:id", authentication, authorization(["admin", "ceo"]), update);
-route.delete("/:id", authentication, authorization(["admin", "ceo"]), remove);
+route.post("/", authentication, authorization(["ADMIN", "CEO"]), create);
+route.patch("/:id", authentication, authorization(["ADMIN", "CEO"]), update);
+route.delete("/:id", authentication, authorization(["ADMIN", "CEO"]), remove);
 
 export default route;

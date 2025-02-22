@@ -25,3 +25,4 @@ const ResourceCategory = db.define(
 );
 
 export default ResourceCategory;
+

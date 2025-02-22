@@ -25,7 +25,7 @@ async function findAll(req, res) {
       loggerError.error(
         `ERROR: No information available.;  Method: ${req.method};  Field-FindAll`
       );
-      return res.status(404).json({ error: "No information available." });
+      return res.status(404).json({ error: "Fields Not Found" });
     }
 
     loggerInfo.info(`Method: ${req.method};  Saccessfully FindAll Field;`);
@@ -53,7 +53,6 @@ async function findOne(req, res) {
       return res.status(404).json({ error: "Field Not Found" });
     }
 
-    
     loggerInfo.info(`Method: ${req.method};  Saccessfully FindOne Field;`);
 
     res.status(200).json({ data: one });
@@ -75,7 +74,7 @@ async function create(req, res) {
       loggerError.error(
         `ERROR: You cannot assign a value to subjectId and professionId at the same time!;  Method: ${req.method};  Field-Create`
       );
-      return res.status(401).json({
+      return res.status(400).json({
         error:
           "You cannot assign a value to subjectId and professionId at the same time!",
       });
@@ -85,7 +84,7 @@ async function create(req, res) {
       loggerError.error(
         `ERROR: Either professionId or subjectId must be provided.;  Method: ${req.method};  Field-Create`
       );
-      return res.status(401).json({
+      return res.status(400).json({
         error: "Either professionId or subjectId must be provided.",
       });
     }
@@ -96,7 +95,7 @@ async function create(req, res) {
         loggerError.error(
           `ERROR: Invalid professionId: Profession does not exist.;  Method: ${req.method};  Field-Create`
         );
-        return res.status(401).json({ error: "Invalid professionId: Profession does not exist." });
+        return res.status(404).json({ error: "Invalid professionId: Profession does not exist." });
       }
     }
 
@@ -106,7 +105,7 @@ async function create(req, res) {
         loggerError.error(
           `ERROR: Invalid subjectId: Subject does not exist.;  Method: ${req.method};  Field-Create`
         );
-        return res.status(401).json({ error: "Invalid subjectId: Subject does not exist." });
+        return res.status(404).json({ error: "Invalid subjectId: Subject does not exist." });
       }
     }
 
@@ -116,17 +115,24 @@ async function create(req, res) {
         loggerError.error(
           `ERROR: Such a field exists;  Method: ${req.method};  Field-Create`
         );
-        return res.status(400).json({ error: "Such a field already exists" });
+        return res.status(409).json({ error: "Such a field already exists" });
       }
       }
 
-    await Field.create(value);
+    let newField = await Field.create(value);
     loggerInfo.info(`Method: ${req.method};  Saccessfully Create Field;`);
 
-    res.status(201).json({ message: "Field Created  Successfully" });
+    if (!newField) {
+      loggerError.error(
+        `ERROR: Something went wrong!Please try again;  Method: ${req.method};  Field-Create`
+      );
+      return res.status(400).json({ error: "Something went wrong!Please try again" });
+    }
+
+    res.status(201).json({ message: "New Field Created  Successfully", data: newField });
   } catch (e) {
     loggerError.error(
-      `ERROR: ${e.message};  Method: ${req.method};  Feild-Create`
+      `ERROR: ${e.message};  Method: ${req.method};  Field-Create`
     );
     res.status(500).json({ error: e.message });
   }
@@ -142,7 +148,7 @@ async function update(req, res) {
       loggerError.error(
         `Fields Not Found;  Method: ${req.method};  Field-FindAll`
       );
-      return res.status(401).json({ error: "Field Not Found" });
+      return res.status(404).json({ error: "Field Not Found" });
     }
 
     let { error, value } = FieldPatchValidation.validate(req.body);
@@ -150,14 +156,14 @@ async function update(req, res) {
       loggerError.error(
         `ERROR: ${error.details[0].message};  Method: ${req.method};  Field-Update`
       );
-      return res.status(401).json({ error: error.details[0].message });
+      return res.status(400).json({ error: error.details[0].message });
     }
 
     if (value.professionId && value.subjectId) {
       loggerError.error(
         `ERROR: You cannot assign a value to subjectId and professionId at the same time!;  Method: ${req.method};  Field-Update`
       );
-      return res.status(401).json({
+      return res.status(400).json({
         error:
           "You cannot assign a value to subjectId and professionId at the same time!",
       });
@@ -167,7 +173,7 @@ async function update(req, res) {
       loggerError.error(
         `ERROR: Either professionId or subjectId must be provided.;  Method: ${req.method};  Field-Update`
       );
-      return res.status(401).json({
+      return res.status(400).json({ 
         error: "Either professionId or subjectId must be provided.",
       });
     }
@@ -178,7 +184,7 @@ async function update(req, res) {
         loggerError.error(
           `ERROR: Invalid professionId: Profession does not exist.;  Method: ${req.method};  Field-Update`
         );
-        return res.status(401).json({ error: "Invalid professionId: Profession does not exist." });
+        return res.status(404).json({ error: "Invalid professionId: Profession does not exist." });
       }
     }
 
@@ -188,7 +194,7 @@ async function update(req, res) {
         loggerError.error(
           `ERROR: Invalid subjectId: Subject does not exist.;  Method: ${req.method};  Field-Update`
         );
-        return res.status(401).json({ error: "Invalid subjectId: Subject does not exist." });
+        return res.status(404).json({ error: "Invalid subjectId: Subject does not exist." });
     }
     }
 
@@ -199,7 +205,7 @@ async function update(req, res) {
     await Field.update(value, { where: { id } });
     loggerInfo.info(`Method: ${req.method};  Saccessfully Update Field;`);
 
-    res.status(201).json({ message: "Field Updated Successfully" });
+    res.status(200).json({ message: "Field Updated Successfully" });
   } catch (e) {
     loggerError.error(
       `ERROR: ${e.message};  Method: ${req.method};  Feild-Update`
@@ -217,7 +223,7 @@ async function remove(req, res) {
       loggerError.error(
         `ERROR: Field Not Found;  Method: ${req.method};  Field-Remove`
       );
-      return res.status(401).json({ error: "Field Not Found" });
+      return res.status(404).json({ error: "Field Not Found" });
     }
 
     if (check.img) {
@@ -227,7 +233,7 @@ async function remove(req, res) {
     await Field.destroy({ where: { id } });
     loggerInfo.info(`Method: ${req.method};  Saccessfully Delete Field;`);
 
-    res.status(201).json({ message: "Field Deleted Successfully!" });
+    res.status(200).json({ message: "Field Deleted Successfully!", data: check });
   } catch (e) {
     loggerError.error(
       `ERROR: ${e.message};  Method: ${req.method};  Feild-Delete`
@@ -249,6 +255,7 @@ async function Search(req, res) {
       let categories = await Field.findAndCountAll({
         limit: take,
         offset: offset,
+        include: [Profession, Subject],
       });
 
       return res.status(200).json({
@@ -281,24 +288,15 @@ async function Search(req, res) {
     let results = await Field.findAll({
       where: conditions,
       order: order.length > 0 ? order : [["id", "ASC"]],
-      include: [
-        {
-          model: Profession,
-          as: "profession",
-        },
-        {
-          model: Subject,
-          as: "subject",
-        },
-      ]});
+      include: [Profession, Subject],});
 
     loggerInfo.info(`Method: ${req.method};  Saccessfully Search Field;`);
 
     if (results.length === 0) {
       loggerError.error(
-        `ERROR: No information available.;  Method: ${req.method};  Field-Search`
+        `ERROR: Fields Not Found;  Method: ${req.method};  Field-Search`
       );
-      return res.status(404).json({ error: "No information available." });
+      return res.status(404).json({ error: "Fields Not Found" });
     }
 
     loggerInfo.info(`Method: ${req.method};  Saccessfully Search Field;`);

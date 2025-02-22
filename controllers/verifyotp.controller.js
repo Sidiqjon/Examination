@@ -25,7 +25,7 @@ async function verifyOtp(req, res) {
         //     return res.status(400).json({ message: "Account is already activated!" });
         // }
 
-        await User.update({ status: "active" }, { where: { email } });
+        await User.update({ status: "ACTIVE" }, { where: { email } });
 
         res.status(200).json({ message: "OTP verified successfully!" });
 
@@ -35,3 +35,4 @@ async function verifyOtp(req, res) {
 }
 
 export default verifyOtp;
+

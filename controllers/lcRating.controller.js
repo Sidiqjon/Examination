@@ -33,7 +33,7 @@ async function getLCsByStars(req, res) {
       subQuery: false,
     });
 
-    res.json({ data: centers });
+    res.status(200).json({ data: centers });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -69,7 +69,7 @@ async function getLCsByComments(req, res) {
       subQuery: false,
     });
 
-    res.json({ data: centers });
+    res.status(200).json({ data: centers });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -106,7 +106,7 @@ async function getLCsByLikes(req, res) {
       subQuery: false,
     });
 
-    res.json({ data: centers });
+    res.status(200).json({ data: centers });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

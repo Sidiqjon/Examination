@@ -61,3 +61,4 @@ ResourceCategory.hasMany(Resource, { foreignKey: "categoryId", onDelete: "CASCAD
 Resource.belongsTo(ResourceCategory, { foreignKey: "categoryId", onDelete: "CASCADE", onUpdate: "CASCADE" });
 
 export default Resource;
+

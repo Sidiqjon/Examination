@@ -19,7 +19,7 @@ const options = {
       },
       servers: [
         {
-          url: "http://localhost:3000/api",
+          url: "http://localhost:3000/",
         },
       ],
     },
@@ -38,7 +38,7 @@ app.use("/api", mainRoute)
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use("*", (req, res) => {
-    res.status(500).send({msg: "Route Not Found!"})
+    res.status(400).send({msg: "Route Not Found!"})
 })
 
 async function bootstrap() {

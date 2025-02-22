@@ -5,9 +5,9 @@ import authorization from "../middlewares/authorization.js"
 
 let userRoute = Router();
 
-userRoute.get("/", authentication, authorization(["admin", "ceo", "user"]), getAll);
-userRoute.get("/:id", getOne);
-userRoute.patch("/:id", authentication, authorization(["admin", "ceo", "user"]), update);
-userRoute.delete("/:id", authentication, authorization(["admin", "ceo", "user"]), remove);
+userRoute.get("/", authentication, authorization(["ADMIN", "CEO", "USER"]), getAll);
+userRoute.get("/:id",authentication, authorization(["ADMIN"]), getOne);
+userRoute.patch("/:id", authentication, authorization(["ADMIN", "CEO", "USER"]), update);
+userRoute.delete("/:id", authentication, authorization(["ADMIN", "CEO", "USER"]), remove);
 
 export default userRoute;

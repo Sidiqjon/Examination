@@ -6,3 +6,4 @@ let getAllCeoRoute = Router();
 getAllCeoRoute.get("/", getAllCeo);
 
 export default getAllCeoRoute;
+

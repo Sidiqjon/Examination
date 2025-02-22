@@ -25,3 +25,4 @@ const Subject = db.define(
 );
 
 export default Subject;
+

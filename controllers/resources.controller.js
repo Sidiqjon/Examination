@@ -35,7 +35,7 @@ async function findAll(req, res) {
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully FindAll Resources;`
     );
-    res.status(201).send({ data: all });
+    res.status(200).send({ data: all });
   } catch (e) {
     loggerError.error(
       `ERROR: ${e.message};  Method: ${req.method};  Resources-FindAll`
@@ -59,7 +59,7 @@ async function findOne(req, res) {
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully FindOne Resources;`
     );
-    res.status(201).json({ data: one });
+    res.status(200).json({ data: one });
   } catch (e) {
     loggerError.error(
       `ERROR: ${e.message};  Method: ${req.method};  Resources-FindOne`
@@ -86,7 +86,7 @@ async function create(req, res) {
       loggerError.error(
         `ERROR: Resources with this name already exists;  Method: ${req.method};  Resources-Create`
       );
-      return res.status(401).json({ error: "Resources with this name already exists.Please try another name!" });}
+      return res.status(409).json({ error: "Resources with this name already exists.Please try another name!" });}
 
     let checkCategory = await ResourceCategory.findOne({
       where: { id: value.categoryId },
@@ -95,15 +95,22 @@ async function create(req, res) {
       loggerError.error(
         `ERROR: Category resource Not Found;  Method: ${req.method};  Resources-Create`
       );
-      return res.status(401).json({ error: "Category Resource Not Found!" });
+      return res.status(404).json({ error: "Category Resource Not Found!" });
     }
 
-    await Resource.create(value);
+    let newResource = await Resource.create(value);
+
+    if (!newResource) {
+      loggerError.error(
+        `ERROR: Resource Not Created;  Method: ${req.method};  Resources-Create`
+      );
+      return res.status(400).json({ error: "Resource Not Created.Please try again" });
+    }
 
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully Create Resources;`
     );
-    res.status(201).json({ message: "Resource Created  Successfully" });
+    res.status(201).json({ message: "Resource Created  Successfully", data: newResource });
   } catch (e) {
     loggerError.error(
       `ERROR: ${e.message};  Method: ${req.method};  Resources-Create`
@@ -129,7 +136,7 @@ async function update(req, res) {
       loggerError.error(
         `ERROR: You are not authorized to update this resource;  Method: ${req.method};  Resources-Update`
       );
-      return res.status(401).json({ error: "You are not authorized to update this resource" });
+      return res.status(403).json({ error: "You are not authorized to update this resource" });
     }
 
     let { error, value } = ResourcesPatchValidation.validate(req.body);
@@ -161,21 +168,9 @@ async function update(req, res) {
         loggerError.error(
           `ERROR: Category resource Not Found;  Method: ${req.method};  Resources-Update`
         );
-        return res.status(404).json({ error: "Category Resource Not Found!" });
+        return res.status(404).json({ error: "Category Resource Not Found with provided ID" });
       }
     }     
-
-    if (value.createdBy) {
-      let checkUser = await User.findOne({      
-        where: { id: value.createdBy },
-      });
-      if (!checkUser) {
-        loggerError.error(
-          `ERROR: User Not Found;  Method: ${req.method};  Resources-Update`
-        );
-        return res.status(404).json({ error: "User Not Found with provided ID!" });
-      }
-    }
 
     if(value.media) {
       deleteOldImage(check.media);
@@ -190,7 +185,7 @@ async function update(req, res) {
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully Update Resources;`
     );
-    res.status(201).json({ message: "Resource Updated Successfully!" });
+    res.status(200).json({ message: "Resource Updated Successfully!" });
   } catch (e) {
     loggerError.error(
       `ERROR: ${e.message};  Method: ${req.method};  Resources-Update`
@@ -215,7 +210,7 @@ async function remove(req, res) {
       loggerError.error(
         `ERROR: You are not authorized to delete this resource;  Method: ${req.method};  Resources-Delete`
       );
-      return res.status(401).json({ error: "You are not authorized to delete this resource" });
+      return res.status(403).json({ error: "You are not authorized to delete this resource" });
     }
 
     if (check.media) {    
@@ -231,7 +226,7 @@ async function remove(req, res) {
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully Delete Resources;`
     );
-    res.status(201).json({ message: "Resource Deleted Successfully" });
+    res.status(200).json({ message: "Resource Deleted Successfully", data: check });
   } catch (e) {
     loggerError.error(
       `ERROR: ${e.message};  Method: ${req.method};  Resources-Delete`
@@ -255,6 +250,10 @@ async function Search(req, res) {
         offset: offset,
         include: {all: true,}
       });
+
+      if (categories.rows.length == 0) {
+        return res.status(404).json({ error: "Resource Pages Not Found" });
+      }
 
       return res.status(200).json({
         totalItems: categories.count,

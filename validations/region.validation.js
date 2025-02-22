@@ -1,8 +1,11 @@
 import Joi from 'joi';
 
-const updateRegionValidation = Joi.object({
-  name: Joi.string().required()
-  
+const RegionValidation = Joi.object({
+  name: Joi.string().pattern(/^[a-zA-Z0-9\s]+$/).required()
 });
 
-export {  updateRegionValidation };
+const RegionPatchValidation = Joi.object({
+  name: Joi.string().pattern(/^[a-zA-Z0-9\s]+$/)
+});
+
+export { RegionValidation, RegionPatchValidation };

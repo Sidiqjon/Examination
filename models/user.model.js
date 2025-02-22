@@ -36,14 +36,14 @@ const User = db.define(
       allowNull: false,
     },
     role: {
-      type: DataTypes.ENUM("admin", "ceo", "user"),
+      type: DataTypes.ENUM("ADMIN", "CEO", "USER"),
       allowNull: false,
-      defaultValue: "user",
+      defaultValue: "USER",
     },
     status: {
-      type: DataTypes.ENUM("active", "inactive"),
+      type: DataTypes.ENUM("ACTIVE", "INACTIVE"),
       allowNull: false,
-      defaultValue: "inactive",
+      defaultValue: "INACTIVE",
     },
   },
   {

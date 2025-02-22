@@ -16,7 +16,7 @@ const authentication = (req, res, next) => {
     try {
         const data = jwt.verify(token, JWTSECRET)
         
-        if (data.status == "active") {
+        if (data.status == "ACTIVE") {
             req.user = data
             next()
         } else {

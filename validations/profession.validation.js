@@ -1,13 +1,12 @@
 import joi from "joi";
 
 const ProfessionValidation = joi.object({
-  name: joi.string().min(2).max(32).required(),
+  name: joi.string().min(2).max(32).pattern(/^[a-zA-Z0-9\s]+$/).required(),
   img: joi.string().required(),
 });
 const ProfessionPatchValidation = joi.object({
-  name: joi.string().min(2).max(32),
+  name: joi.string().min(2).max(32).pattern(/^[a-zA-Z0-9\s]+$/),
   img: joi.string(),
 });
-
 
 export { ProfessionValidation, ProfessionPatchValidation };

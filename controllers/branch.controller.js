@@ -83,12 +83,12 @@ async function create(req, res) {
     let checkLC = await LearningCenter.findByPk(learningCenterId)
     let checkRegion = await Region.findByPk(regionId)
 
-    if (checkLC.createdBy != req.user.id && req.user.role != "admin") {
-      return res.status(401).json({ message: "You Are Not Allowed!" })
-    }
-
     if (!checkLC) {
       return res.status(404).json({ error: "The Learnig Center with the provided 'ID' Does Not exist!" });
+    }
+
+    if (checkLC.createdBy != req.user.id && req.user.role != "ADMIN") {
+      return res.status(403).json({ message: "You Are Not Allowed to create a Branch!" })
     }
 
     if (!checkRegion) {
@@ -98,7 +98,7 @@ async function create(req, res) {
     if (name) {
       let checkName = await Branch.findOne({ where: { name } });    
       if (checkName) {
-        return res.status(400).json({ error: "Branch with this name already exists" });
+        return res.status(409).json({ error: "Branch with this name already exists" });
       }
     }
 
@@ -121,7 +121,7 @@ async function create(req, res) {
 async function update(req, res) {
   try {
     const { id } = req.params;
-    const { img, regionId, learningCenterId, ...updateData } = req.body;
+    const { img, regionId, ...updateData } = req.body;
 
     const branch = await Branch.findOne({ where: { id } });
     if (!branch) {
@@ -130,20 +130,13 @@ async function update(req, res) {
 
     let LC = await LearningCenter.findByPk(branch.learningCenterId)
     
-    if (LC.createdBy != req.user.id && req.user.role != "admin") {
-      return res.status(401).json({ message: "You Are Not Allowed!" })
+    if (LC.createdBy != req.user.id && req.user.role != "ADMIN") {
+      return res.status(403).json({ message: "You Are Not Allowed to update this Branch!" })
     }
 
     let { error, value } = BranchPatchValidation.validate(req.body);
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
-    }
-
-    if (learningCenterId) {
-      let checkLC = await LearningCenter.findByPk(learningCenterId)
-      if (!checkLC) {
-        return res.status(404).json({ error: "The Learnig Center with the provided 'ID' Does Not exist!" });
-      }
     }
 
     if (regionId) {
@@ -156,7 +149,7 @@ async function update(req, res) {
     if (req.body.name) {
       let checkName = await Branch.findOne({ where: { name: req.body.name } });    
       if (checkName) {
-        return res.status(400).json({ error: "Branch with this name already exists" });
+        return res.status(409).json({ error: "Branch with this name already exists" });
       }
     }
 
@@ -184,18 +177,20 @@ async function remove(req, res) {
 
     const LC = await LearningCenter.findByPk(branch.learningCenterId)
     
-    if (LC.createdBy != req.user.id && req.user.role != "admin") {
-      return res.status(401).json({ message: "You Are Not Allowed!" })
+    if (LC.createdBy != req.user.id && req.user.role != "ADMIN") {        
+      return res.status(403).json({ message: "You Are Not Allowed to delete this Branch!" })
     }
 
-    deleteOldImage(branch.img);
+    if (branch.img) {
+      deleteOldImage(branch.img);
+    }
 
     await Branch.destroy({ where: { id } });
 
     let branchNumber = LC.branchNumber - 1
     await LC.update({ branchNumber })
 
-    res.status(200).json({ message: "Branch deleted successfully." });
+    res.status(200).json({ message: "Branch deleted successfully.", data: branch });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }

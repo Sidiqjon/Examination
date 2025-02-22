@@ -1,5 +1,5 @@
 import User from "../models/user.model.js";
-import UserEnrolment from "../models/userEnrolment.model.js";
+import UserEnrolment from "../models/userenrolment.model.js";
 import Comment from "../models/comment.model.js";
 import LearningCenter from "../models/learningCenter.model.js"
 import Resource from "../models/resource.model.js" 
@@ -9,20 +9,17 @@ import fs from "fs";
 import path from "path";
 import { 
   userPatchValid,   
-  validateEmail, 
   validatePhoneNumber, 
   validateName } from "../validations/user.validation.js";
 
 const getAll = async (req, res) => {
-    try {
-        let userRole = req.user.role    
-        if (userRole == "admin") {
-            getUsersForAdmin(req, res)
-        }else {
-            getAllCeo(req, res)
-        }
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    let userRole = req.user.role    
+    console.log(userRole);
+    
+    if (userRole == "ADMIN") {
+        getUsersForAdmin(req, res)
+    }else {
+        getAllCeo(req, res)
     }
 };
 
@@ -55,21 +52,7 @@ const getUsersForAdmin = async (req, res) => {
 
     const users = await User.findAndCountAll({
       where,
-      include: [
-        { model: Comment },
-        { model: Resource },
-        { model: Like },
-        {
-          model: UserEnrolment,
-          include: ["learningCenter", "branch"],
-          required: false,
-          where: role === "user" ? {} : null, 
-        },
-        {
-          model: LearningCenter,
-          required: role === "ceo" ? false : null, 
-        },
-      ],
+      include: {all: true},
       order: [[sortBy, sortOrder]],
       ...pagination,
     });
@@ -102,12 +85,12 @@ const getAllCeo = async (req, res) => {
     if (page) {
       const ceos = await User.findAndCountAll({
         where,
-        include: [{ model: LearningCenter }, { model: Resource }, { model: Comment }],
+        include: {all: true},
         order: [[sortBy, sortOrder]],
         ...pagination,
       });
 
-      if (!ceos.rows.length) return res.status(404).json({ message: "No CEOs found" });
+      if (!ceos.rows.length) return res.status(404).json({ message: "No CEOs found!" });
 
       return res.status(200).json({
         total: ceos.count,
@@ -118,13 +101,18 @@ const getAllCeo = async (req, res) => {
     } else {
       const ceos = await User.findAll({
         where,
-        include: [{ model: LearningCenter }, { model: Resource }, { model: Comment }],
+        include: {all: true},
         order: [[sortBy, sortOrder]],
       });
 
-      if (!ceos.length) return res.status(404).json({ message: "No CEOs found" });
+      if (!ceos.length) return res.status(404).json({ message: "No CEOs found!" });
 
-      return res.status(200).json(ceos);
+      return res.status(200).json({
+        total: ceos.count,
+        page,
+        take,
+        data: ceos,
+      });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -132,24 +120,9 @@ const getAllCeo = async (req, res) => {
 };
 
 const getOne = async (req, res) => {
-  
   try {
-    const user = await User.findByPk(req.params.id, {
-      include:[
-        { model: Comment },
-        { model: Resource },
-        { model: Like },
-        {
-          model: UserEnrolment,
-          include: ["learningCenter", "branch"],
-          required: false,
-        },
-        {
-          model: LearningCenter,
-          required: false,
-        },
-      ],});
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const user = await User.findByPk(req.params.id, { include: {all: true} });
+    if (!user) return res.status(404).json({ message: "User not found!" });
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -159,33 +132,26 @@ const getOne = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params;
-    const { firstName, lastName, phoneNumber, img, email, role, status } = req.body;
+    const { firstName, lastName, phoneNumber, img, status } = req.body;
 
     if (firstName){
         let checkfName = validateName(firstName)
         if (!checkfName) {
-          return res.status(400).json({ message: "Name format is incorrect!" });
+          return res.status(400).json({ message: "Name format is incorrect! Name must be at least 2 characters and contains only letters!" });
         }
     }
 
     if (lastName){
       let checklName = validateName(lastName)
       if (!checklName) {
-        return res.status(400).json({ message: "Surname format is incorrect!" });
-      }
-    }
-
-    if (email) {
-      let checkEmail = validateEmail(email);
-      if (!checkEmail) {
-        return res.status(400).json({ message: "Email format is incorrect!" });
+        return res.status(400).json({ message: "Surname format is incorrect! Surname must be at least 2 characters and contains only letters!" });
       }
     }
 
     if (phoneNumber) {
       let checkPN = validatePhoneNumber(phoneNumber);
       if (!checkPN) {
-        return res.status(400).json({ message: "Phone Number format is incorrect!" });
+        return res.status(400).json({ message: "Phone Number format is incorrect! Format: +998900000000" });
       }
     }
 
@@ -195,7 +161,7 @@ const update = async (req, res) => {
     }
 
     const user = await User.findByPk(id);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({ message: "User not found!" });
 
     if (img) {
       fs.unlink(path.join("uploads", user.img), (err) => {
@@ -203,10 +169,13 @@ const update = async (req, res) => {
       });
     }
 
-    if (req.user.role !== "admin") {
-      await user.update({ firstName, lastName, phoneNumber, img });
+    if (req.user.role !== "ADMIN" && req.user.id == id) {
+      if (value.status) {
+        return res.status(400).json({ message: "You cannot change your status!" });
+      }
+      await user.update(value);
     } else {
-      await user.update({ firstName, lastName, phoneNumber, img, email, role, status });
+      await user.update(value);
     }
     res.status(200).json({ message: "User updated successfully!" });
   } catch (error) {
@@ -225,14 +194,18 @@ const remove = async (req, res) => {
         if (err) console.error("Error deleting image:", err.message);
       });
     }
+
+    if (id != req.user.id && req.user.role !== "ADMIN") {
+      return res.status(400).json({ message: "You cannot delete another user!" });
+    }
     
     const deleted = await user.destroy();
 
     if (!deleted) {
-      return res.status(500).json({ message: "Failed to delete user" });
+      return res.status(400).json({ message: "Failed to delete user" });
     }
     
-    res.status(200).json({ message: "User deleted successfully" });
+    res.status(200).json({ message: "User deleted successfully!" });
     
   } catch (error) {
     res.status(500).json({ error: error.message });

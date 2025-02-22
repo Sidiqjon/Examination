@@ -1,5 +1,5 @@
 import LearningCenter from "../models/learningCenter.model.js";
-import UserEnrolment from "../models/userEnrolment.model.js";
+import UserEnrolment from "../models/userenrolment.model.js";
 import User from "../models/user.model.js";
 import { Op } from "sequelize";
 
@@ -13,7 +13,7 @@ async function getStudents (req, res) {
     if (!learningCenter) {
       return res.status(404).json({ error: 'Learning center not found' });
     }
-    if (currentUser.role === 'ceo') {
+    if (currentUser.role === 'CEO') {
       if (learningCenter.createdBy !== currentUser.id) {
         return res.status(403).json({ error: 'You are not authorized to access this learning center' });
       }

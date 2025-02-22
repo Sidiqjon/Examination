@@ -61,3 +61,4 @@ LearningCenter.hasMany(Branch, { foreignKey: "learningCenterId", onDelete: "CASC
 Branch.belongsTo(LearningCenter, { foreignKey: "learningCenterId", onDelete: "CASCADE", onUpdate: "CASCADE" });
 
 export default Branch;
+

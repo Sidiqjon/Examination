@@ -26,32 +26,42 @@ totp.options = { step: 1800, digits: 6 };
 
 async function Register(req, res) {
   try {
-    let { firstName, lastName, password, email, phoneNumber } = req.body;
+    let { firstName, lastName, password, email, phoneNumber, role } = req.body;
 
     let checkfName = validateName(firstName)
     if (!checkfName) {
-      return res.status(400).json({ message: "Name format is incorrect!" });
+      return res.status(400).json({ message: "Name format is incorrect!Name must be at least 2 characters and contains only letters!" });
     }
 
     let checklName = validateName(lastName)
     if (!checklName) {
-      return res.status(400).json({ message: "Surname format is incorrect!" });
+      return res.status(400).json({ message: "Surname format is incorrect!Surname must be at least 2 characters and contains only letters!" });
     }
 
     let checkEmail = validateEmail(email);
     if (!checkEmail) {
-      return res.status(400).json({ message: "Email format is incorrect!" });
+      return res.status(400).json({ message: "Email format is incorrect!Format: 'example@example.com'" });
     }
 
     let checkPN = validatePhoneNumber(phoneNumber);
     if (!checkPN) {
-      return res.status(400).json({ message: "Phone Number format is incorrect!" });
+      return res.status(400).json({ message: "Phone Number format is incorrect!Format: +998900000000" });
     }
 
     let checkPwd = validatePassword(password);
     if (!checkPwd) {
-      return res.status(400).json({ message: "Please, USE stronger password for your safety!" });
+      return res.status(400).json({ message: "Please, USE stronger password for your safety!For Example: #Abcd123$" });
     }
+
+    if (role && role == "ADMIN") {
+      return res.status(400).json({ message: "You are not allowed to register as an ADMIN!" });
+    }
+
+    if (!role) {
+      role = "USER";
+    }
+
+    req.body.role = role;
 
     let { error, value } = userValidation.validate(req.body);
     if (error) {
@@ -84,10 +94,10 @@ async function Register(req, res) {
 
         res.status(201).json({
           message: `${firstName}, You registered successfully! An OTP has been sent to your Email!`,
-          otp,
+          otp,data: result
         });
       } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(503).json({ message: "Email service is unavailable, please try again later.", error: error.message });
       }
     } else {
       return res.status(400).json({ message: "Error While Registration." });
