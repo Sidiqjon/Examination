@@ -6,7 +6,6 @@ import {
   userEnrolmentValidation,
 } from "../validations/userenrolment.validation.js";
 import { Op } from "sequelize";
-import { loggerError, loggerInfo } from "../logs/logger.js";
 
 
 async function create(req, res) {

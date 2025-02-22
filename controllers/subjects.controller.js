@@ -3,7 +3,6 @@ import {
   SubjectValidation,
   SubjectPatchValidation,
 } from "../validations/subject.validation.js";
-import { loggerInfo, loggerError } from "../logs/logger.js";
 import { Op } from "sequelize";
 import path from "path"
 import fs from "fs"
@@ -22,16 +21,11 @@ async function findAll(req, res) {
     let all = await Subject.findAll({ include: { all: true } });
 
     if (all.length === 0) {
-      loggerError.error(
-        `ERROR: No Subjects Available.;  Method: ${req.method};  Subjects-FindAll`
-      );
       return res.status(404).json({ error: "No Subjects Available. " });
     }
 
-    loggerInfo.info(`Method: ${req.method};  Saccessfully FindAll Subject`);
     res.status(200).send({ data: all });
   } catch (e) {
-    loggerError.error(`ERROR: ${e.message};  Method: ${req.method};  Subjects-FindAll`);
     res.status(500).json({ error: e.message });
   }
 }
@@ -42,16 +36,11 @@ async function findOne(req, res) {
     let one = await Subject.findOne({ where: { id }, include: { all: true } });
 
     if (!one) {
-      loggerError.error(
-        `ERROR: Subjects Not Found;  Method: ${req.method};  Subjects-FindOne`
-      );
       return res.status(404).json({ error: "Subject Not Found" });
     }
 
-    loggerInfo.info(`Method: ${req.method};  Saccessfully FindOne Subject`);
     res.status(200).json({ data: one });
   } catch (e) {
-    loggerError.error(`ERROR: ${e.message};  Method: ${req.method};  Subjects-FindOne`);
     res.status(500).json({ error: e.message });
   }
 }
@@ -60,24 +49,17 @@ async function create(req, res) {
   try {
     let { error, value } = SubjectValidation.validate(req.body);
     if (error) {
-      loggerError.error(
-        `ERROR: ${error.details[0].message};  Method: ${req.method};  Subjects-Create`
-      );
       return res.status(400).json({ error: error.details[0].message });
     }
 
     let check = await Subject.findOne({ where: { name: value.name } });
 
     if (check) {
-      loggerError.error(
-        `ERROR: Such a Subject exists;  Method: ${req.method};  Subjects-Create`
-      );
       return res.status(409).json({ error: "Such a Subject exists!" });
     }
 
     let newSubject = await Subject.create(value);
 
-    loggerInfo.info(`Method: ${req.method};  Saccessfully Create Subject`);
 
     if (newSubject) {
       return res.status(201).json({ message: "New Subject Created Successfully", data: newSubject });
@@ -86,7 +68,6 @@ async function create(req, res) {
     }
 
   } catch (e) {
-    loggerError.error(`ERROR: ${e.message};  Method: ${req.method};  Subjects-Create`);
     res.status(500).json({ error: e.message });
   }
 }
@@ -98,28 +79,18 @@ async function update(req, res) {
     let check = await Subject.findOne({ where: { id } });
 
     if (!check) {
-      loggerError.error(
-        `ERROR: Subject Not Found;  Method: ${req.method};  Subjects-Update`
-      );
       return res.status(404).json({ error: "Subject Not Found" });
     }
 
     let { error, value } = SubjectPatchValidation.validate(req.body);
 
     if (error) {
-      loggerError.error(
-        `ERROR: ${error.details[0].message};  Method: ${req.method};  Subjects-Update`
-      );
       return res.status(400).json({ error: error.details[0].message });
     }
 
     if (value.name) {
       let checkP = await Subject.findOne({ where: { name: value.name } });
       if (checkP) {
-        loggerError.error(
-          `ERROR: Such a Subject exists;  Method: ${req.method};  Subjects-Update`
-        );
-
         return res.status(409).json({ error: "Such a Subject exists!" });
       }
     }
@@ -128,11 +99,9 @@ async function update(req, res) {
       deleteOldImage(check.img); 
     }
 
-    loggerInfo.info(`Method: ${req.method};  Saccessfully Update Subject`);
     await Subject.update(value, { where: { id } });
     res.status(200).json({ message: "Update Successfully" });
   } catch (e) {
-    loggerError.error(`ERROR: ${e.message};  Method: ${req.method};  Subjects-Update`);
     res.status(500).json({ error: e.message });
   }
 }
@@ -144,9 +113,6 @@ async function remove(req, res) {
     let check = await Subject.findOne({ where: { id } });
 
     if (!check) {
-      loggerError.error(
-        `ERROR: Subject Not Found;  Method: ${req.method};  Subjects-Delete`
-      );
       return res.status(404).json({ error: "Subject Not Found" });
     }
 
@@ -155,10 +121,8 @@ async function remove(req, res) {
     }
 
     await Subject.destroy({ where: { id } });
-    loggerInfo.info(`Method: ${req.method};  Saccessfully Delete Subject`);
     res.status(200).json({ message: "Subject Deleted Successfully", data: check });
   } catch (e) {
-    loggerError.error(`ERROR: ${e.message};  Method: ${req.method};  Subjects-Delete`);
     res.status(500).json({ error: e.message });
   }
 }
@@ -216,11 +180,6 @@ async function Search(req, res) {
       include: {all: true}
     });
 
-    loggerInfo.info(
-      `Method: ${
-        req.method
-      };  Saccessfully Search Subject; Data: ${JSON.stringify(results)}`
-    ); 
 
     if (results.length == 0) {
       return res.status(404).json({error: "Subjects Not Found"})
@@ -228,7 +187,6 @@ async function Search(req, res) {
 
     res.status(200).json({ data: results });
   } catch (e) {
-    loggerError.error(`ERROR: ${e.message};  Method: ${req.method};  Subjects-Search`);
     res.status(500).send({ error: e.message });
   }
 }
