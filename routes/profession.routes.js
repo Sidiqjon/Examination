@@ -30,7 +30,7 @@ export default route;
 
 /**
  * @swagger
- * /professions:
+ * /api/professions:
  *   get:
  *     summary: Get all professions
  *     tags: [Professions]
@@ -43,7 +43,7 @@ export default route;
 
 /**
  * @swagger
- * /professions/{id}:
+ * /api/professions/{id}:
  *   get:
  *     summary: Get a profession by ID
  *     tags: [Professions]
@@ -63,7 +63,7 @@ export default route;
 
 /**
  * @swagger
- * /professions:
+ * /api/professions:
  *   post:
  *     summary: Create a new profession
  *     tags: [Professions]
@@ -96,7 +96,7 @@ export default route;
 
 /**
  * @swagger
- * /professions/{id}:
+ * /api/professions/{id}:
  *   patch:
  *     summary: Update a profession
  *     tags: [Professions]
@@ -133,7 +133,7 @@ export default route;
 
 /**
  * @swagger
- * /professions/{id}:
+ * /api/professions/{id}:
  *   delete:
  *     summary: Delete a profession
  *     tags: [Professions]
@@ -155,7 +155,7 @@ export default route;
 
 /**
  * @swagger
- * /professions/search:
+ * /api/professions/search:
  *   get:
  *     summary: Search professions with filters and pagination
  *     tags: [Professions]

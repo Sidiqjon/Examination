@@ -47,7 +47,7 @@ mainRoute.use("/all-ceo", getAllCeoRoute)
 mainRoute.use("/refresh-token", refreshTokenRoute)
 mainRoute.use("/lc-students", studentsOfaLCRoute)
 mainRoute.use("/my-learning-centers", getMyCentersRoute)
-mainRoute.use("/lc-rating", lcRatingRoute)
+mainRoute.use("/lc-ratings", lcRatingRoute)
 mainRoute.use("/excel", userExcelRoute)
 
 mainRoute.use("/resource-category", routeResourcesCategory);

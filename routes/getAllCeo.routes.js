@@ -9,7 +9,7 @@ export default getAllCeoRoute;
 
 /**
  * @swagger
- * /api/ceos:
+ * /api/all-ceo:
  *   get:
  *     summary: 👨‍💼 Get All CEOs
  *     description: Retrieve a list of all users with the role "CEO". Supports filtering, sorting, and pagination.

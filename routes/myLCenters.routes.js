@@ -11,7 +11,7 @@ export default route;
 
 /**
  * @swagger
- * /my-centers:
+ * /api/my-learning-centers:
  *   get:
  *     summary: "🔍 Get Learning Centers Created by Current User"
  *     description: "Fetch all learning centers created by the authenticated user. Only ADMIN and CEO roles can access this route."

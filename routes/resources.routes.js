@@ -22,7 +22,7 @@ export default route
 
 /**
  * @swagger
- * /resources/search:
+ * /api/resources/search:
  *   get:
  *     summary: 🔍 Search for resources
  *     tags: [Resources 📚]
@@ -58,7 +58,7 @@ export default route
 
 /**
  * @swagger
- * /resources:
+ * /api/resources:
  *   get:
  *     summary: 📄 Get all resources
  *     tags: [Resources 📚]
@@ -67,7 +67,11 @@ export default route
  *         description: List of all resources
  *       500:
  *         description: Server error
- *
+ */
+
+/**
+ * @swagger
+ * /api/resources:
  *   post:
  *     summary: ➕ Create a new resource
  *     tags: [Resources 📚]
@@ -110,7 +114,7 @@ export default route
 
 /**
  * @swagger
- * /resources/{id}:
+ * /api/resources/{id}:
  *   get:
  *     summary: 📌 Get a single resource by ID
  *     tags: [Resources 📚]
@@ -128,7 +132,11 @@ export default route
  *         description: Resource not found
  *       500:
  *         description: Server error
- *
+ */
+
+/**
+ * @swagger
+ * /api/resources/{id}:
  *   patch:
  *     summary: ✏️ Update a resource
  *     tags: [Resources 📚]
@@ -167,7 +175,11 @@ export default route
  *         description: Resource not found
  *       500:
  *         description: Server error
- *
+ */
+
+/**
+ * @swagger
+ * /api/resources/{id}:
  *   delete:
  *     summary: 🗑️ Delete a resource
  *     tags: [Resources 📚]
