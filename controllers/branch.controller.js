@@ -197,3 +197,4 @@ async function remove(req, res) {
 }
 
 export { findAll, findOne, create, update, remove };
+

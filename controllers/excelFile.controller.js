@@ -119,7 +119,7 @@ const exportLearningCentersToExcel = async (req, res) => {
       { header: "Phone Number", key: "phoneNumber", width: 20 },
       { header: "Address", key: "address", width: 30 },
       { header: "Region", key: "region", width: 20 },
-      { header: "Created By", key: "createdBy", width: 30 },
+      { header: "Created By", key: "createdBy", width: 35 },
       { header: "Branch Count", key: "branchCount", width: 15 },
       { header: "Total Comments", key: "totalComments", width: 15 },
       { header: "Total Likes", key: "totalLikes", width: 15 },

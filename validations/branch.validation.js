@@ -18,3 +18,4 @@ const BranchPatchValidation = Joi.object({
 });
 
 export { BranchValidation, BranchPatchValidation };
+

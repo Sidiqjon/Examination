@@ -25,4 +25,3 @@ const Profession = db.define(
 );
 
 export default Profession;
-

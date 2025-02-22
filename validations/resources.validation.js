@@ -18,3 +18,4 @@ const ResourcesPatchValidation = joi.object({
 });
 
 export { ResourcesValidation, ResourcesPatchValidation };
+

@@ -63,4 +63,3 @@ Subject.hasMany(Field, { foreignKey: "subjectId", onDelete: "CASCADE", onUpdate:
 Field.belongsTo(Subject, { foreignKey: "subjectId", onDelete: "CASCADE", onUpdate: "CASCADE" });
 
 export default Field;
-

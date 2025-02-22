@@ -11,3 +11,4 @@ const ResourcesCategoryPatchValidation = joi.object({
 });
 
 export { ResourcesCategoryValidation, ResourcesCategoryPatchValidation };
+

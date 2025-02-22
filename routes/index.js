@@ -69,43 +69,6 @@ mainRoute.use("/image", express.static("uploads"));
 
 export default mainRoute;
 
-
-/**
- * @swagger
- * /api/upload:
- *   post:
- *     summary: 📤 Upload an image 📤
- *     tags:
- *       - Upload
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               image:
- *                 type: string
- *                 format: binary
- *     responses:
- *       201:
- *         description: ✅ Image uploaded successfully ✅
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: string
- *                   example: "uploaded-image.jpg"
- *       400:
- *         description: ❌ Bad request ❌
- *       500:
- *         description: ❌ Internal server error ❌
- */
-
 /**
  * @swagger
  * /api/image/{filename}:

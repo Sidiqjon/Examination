@@ -21,10 +21,6 @@ async function verifyOtp(req, res) {
             return res.status(400).json({ message: "Invalid OTP!" });
         }
 
-        // if (user.status === "active") {
-        //     return res.status(400).json({ message: "Account is already activated!" });
-        // }
-
         await User.update({ status: "ACTIVE" }, { where: { email } });
 
         res.status(200).json({ message: "OTP verified successfully!" });

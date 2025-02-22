@@ -113,3 +113,4 @@ async function getLCsByLikes(req, res) {
 }
 
 export { getLCsByStars, getLCsByComments, getLCsByLikes };
+

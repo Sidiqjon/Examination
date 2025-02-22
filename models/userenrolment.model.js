@@ -59,3 +59,4 @@ Branch.hasMany(UserEnrolment, { foreignKey: "branchId", onDelete: "CASCADE", onU
 UserEnrolment.belongsTo(Branch, { foreignKey: "branchId", onDelete: "CASCADE", onUpdate: "CASCADE" });
 
 export default UserEnrolment;
+

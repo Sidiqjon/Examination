@@ -11,3 +11,4 @@ const SubjectPatchValidation = joi.object({
 
 
 export { SubjectValidation, SubjectPatchValidation };
+

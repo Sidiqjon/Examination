@@ -55,3 +55,4 @@ function validateName(name) {
 }
 
 export { userValidation, userValidationAdmin, userPatchValid, validatePhoneNumber, validateEmail, validatePassword, validateName} 
+
