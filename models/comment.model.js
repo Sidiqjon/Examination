@@ -53,3 +53,4 @@ LearningCenter.hasMany(Comment, { foreignKey: "learningCenterId", onDelete: "CAS
 Comment.belongsTo(LearningCenter, { foreignKey: "learningCenterId", onDelete: "CASCADE", onUpdate: "CASCADE" });
 
 export default Comment;
+

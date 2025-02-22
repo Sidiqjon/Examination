@@ -21,3 +21,4 @@ const Region = db.define(
 );
 
 export default Region;
+

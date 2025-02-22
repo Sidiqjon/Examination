@@ -7,3 +7,4 @@ let route = Router();
 route.get("/", authentication, getMyInfo);
 
 export default route;
+

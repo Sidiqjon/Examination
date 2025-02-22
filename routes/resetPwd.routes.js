@@ -6,3 +6,4 @@ let resetPwdRoute = Router();
 resetPwdRoute.post("/", resPassword);
 
 export default resetPwdRoute;
+

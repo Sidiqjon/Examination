@@ -71,7 +71,7 @@ async function create(req, res) {
       loggerError.error(
         `ERROR: ${error.details[0].message};  Method: ${req.method};  ResourceCategory-Create`
       );
-      return res.status(401).json({ error: error.details[0].message });
+      return res.status(400).json({ error: error.details[0].message });
     }
 
     let check = await ResourceCategory.findOne({
@@ -87,12 +87,19 @@ async function create(req, res) {
         .json({ error: "Category with this name already exists" });
     }
 
-    await ResourceCategory.create(value);
+    let newResourceCategory = await ResourceCategory.create(value);
+
+    if (!newResourceCategory) {
+      loggerError.error(
+        `ERROR: Resource Category Not Created;  Method: ${req.method};  ResourceCategory-Create`
+      );
+      return res.status(404).json({ error: "Resource Category Not Created.Please try again" });
+    }
 
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully Create ResourceCategory;`
     );
-    res.status(201).json({ data: "Resource Category Created  Successfully" });
+    res.status(201).json({ data: "Resource Category Created  Successfully", data: newResourceCategory });
   } catch (e) {
     loggerError.error(
       `ERROR: ${e.message};  Method: ${req.method};  ResourceCategory-Create`
@@ -120,7 +127,7 @@ async function update(req, res) {
       loggerError.error(
         `ERROR: ${error.details[0].message};  Method: ${req.method};  ResourceCategory-Update`
       );
-      return res.status(401).json({ error: error.details[0].message });
+      return res.status(400).json({ error: error.details[0].message });
     }
 
     if (value.name) {
@@ -131,7 +138,7 @@ async function update(req, res) {
         loggerError.error(
           `ERROR: Category with this name already exists;  Method: ${req.method};  ResourceCategory-Update`
         );
-        return res.status(401).json({ error: "Category with this name already exists" });
+        return res.status(409).json({ error: "Category with this name already exists" });
       }
     }
 
@@ -144,7 +151,7 @@ async function update(req, res) {
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully Update ResourceCategory;`
     );
-    res.status(201).json({ data: "Resource Category Updated Successfully" });
+    res.status(201).json({ message: "Resource Category Updated Successfully" });
   } catch (e) {
     loggerError.error(
       `ERROR: ${e.message};  Method: ${req.method};  ResourceCategory-Update`
@@ -162,7 +169,7 @@ async function remove(req, res) {
       loggerError.error(
         `ERROR: Resource Category Not Found;  Method: ${req.method};  ResourceCategory-Delete`
       );
-      return res.status(401).json({ error: "Resource Category Not Found" });
+      return res.status(404).json({ error: "Resource Category Not Found" });
     }
 
     if (check.img) {
@@ -174,7 +181,7 @@ async function remove(req, res) {
     loggerInfo.info(
       `Method: ${req.method};  Saccessfully Delete ResourceCategory;`
     );
-    res.status(201).json({ data: "Resource Category Deleted Successfully" });
+    res.status(201).json({ message: "Resource Category Deleted Successfully", data: check });
   } catch (e) {
     loggerError.error(
       `ERROR: ${e.message};  Method: ${req.method};  ResourceCategory-Delete`
@@ -196,6 +203,10 @@ async function Search(req, res) {
         limit: take,
         offset: offset,
         include: {all: true}});
+
+      if (categories.rows.length == 0) {
+        return res.status(404).json({ error: "Resource Category Pages Not Found" });
+      }
 
       return res.status(200).json({
         totalItems: categories.count,
@@ -244,9 +255,9 @@ async function Search(req, res) {
 
   } catch (e) {
     loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  ResourceCategory-Search`
+      `ERROR: ${e.message};  Method: ${req.method};  ResourceCategory-Search`
     );
-    res.send({ e: e.message });
+    res.status(500).json({ error: e.message });
   }
 }
 

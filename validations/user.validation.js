@@ -7,17 +7,25 @@ const userValidation = Joi.object({
     email: Joi.string().required(),
     img: Joi.string().required(),
     password: Joi.string().min(8).max(255).required(),
-    role: Joi.string(),
+    role: Joi.string().valid("CEO", "USER").required(),
+})
+
+const userValidationAdmin = Joi.object({
+    firstName: Joi.string().min(2).max(32).required(),
+    lastName: Joi.string().min(2).max(32).required(),
+    phoneNumber: Joi.string().min(13).max(13).required(),
+    email: Joi.string().required(),
+    img: Joi.string().required(),
+    password: Joi.string().min(8).max(255).required(),
+    role: Joi.string().valid("ADMIN").required(),
 })
 
 const userPatchValid = Joi.object({
     firstName: Joi.string().min(2).max(32),
     lastName: Joi.string().min(2).max(32),
     phoneNumber: Joi.string().min(13).max(13),
-    email: Joi.string(),
     img: Joi.string(),
-    role: Joi.string(),
-    status: Joi.string()
+    status: Joi.string().valid("ACTIVE", "INACTIVE"),
 })
 
 function validatePhoneNumber(phoneNumber) {
@@ -46,4 +54,4 @@ function validateName(name) {
     return nameRegex.test(name);
 }
 
-export { userValidation, userPatchValid, validatePhoneNumber, validateEmail, validatePassword, validateName} 
+export { userValidation, userValidationAdmin, userPatchValid, validatePhoneNumber, validateEmail, validatePassword, validateName} 

@@ -4,68 +4,6 @@ import User from "../models/user.model.js";
 import { LikeValidation } from "../validations/like.validation.js";
 import { loggerError, loggerInfo } from "../logs/logger.js";
 
-async function findAll(req, res) {
-  try {
-    let all = await Like.findAll({
-      include: [
-        {
-          model: User,
-          attributes: ["id", "firstname", "lastname"],
-        },
-        {
-          model: LearningCenter,
-          attributes: ["id", "name", "address"],
-        },
-      ],
-    });
-
-    if (all.length === 0) {
-      loggerError.error(
-        `ERROR: No information available.;  Method: ${req.method};  Like-FindAll`
-      );
-      return res.status(404).json({ error: "No information available." });
-    }
-
-    loggerInfo.info(`Method: ${req.method};  Saccessfully FindAll Like;`);
-    res.status(200).send({ data: all });
-  } catch (e) {
-    loggerError.error(`ERROR: ${e.message };  Method: ${req.method};  Likes-FindOne`);
-    res.status(500).json({ error: e.message });
-  }
-}
-
-async function findOne(req, res) {
-  try {
-    let { id } = req.params;
-    let one = await Like.findOne({
-      where: { id },
-      include: [
-        {
-          model: User,
-          attributes: ["id", "firstname", "lastname"],
-        },
-        {
-          model: LearningCenter,
-          attributes: ["id", "name", "address"],
-        },
-      ],
-    });
-
-    if (!one) {
-      loggerError.error(
-        `ERROR: User Not Found;  Method: ${req.method};  Like-FindOne`
-      );
-      return res.status(404).json({ error: "User Not Found" });
-    }
-
-    loggerInfo.info(`Method: ${req.method};  Saccessfully FindOne Like;`);
-    res.status(200).json({ data: one });
-  } catch (e) {
-    loggerError.error(`ERROR: ${e.message};  Method: ${req.method};  Likes-FindOne`);
-    res.status(500).json({ error: e.message });
-  }
-}
-
 async function create(req, res) {
   try {
     req.body.userId = req.user.id
@@ -82,9 +20,9 @@ async function create(req, res) {
 
     if (!checkUser) {
       loggerError.error(
-        `ERROR: UserId Not Found;  Method: ${req.method};  Like-Create`
+        `ERROR: User Not Found;  Method: ${req.method};  Like-Create`
       );
-      return res.status(404).json({ error: "UserId Not Found" });
+      return res.status(404).json({ error: "User Not Found with this Id" });
     }
 
     let checkLear = await LearningCenter.findOne({where: {id: value.learningCenterId}})
@@ -93,32 +31,17 @@ async function create(req, res) {
       loggerError.error(
         `ERROR: LearningCenter Not Found;  Method: ${req.method};  Like-Create`
       );
-      return res.status(404).json({ error: "LearningCenter Not Found" });
+      return res.status(404).json({ error: "LearningCenter Not Found with this Id" });
     }
 
     let check = await Like.findOne({
-      where: { userId: value.userId, learningCenterId: value.learningCenterId },
-      include: [
-        {
-          model: User,
-          attributes: ["id", "firstname", "lastname"],
-        },
-        {
-          model: LearningCenter,
-          attributes: ["id", "name", "address"],
-        },
-      ],
-    });
+      where: { userId: value.userId, learningCenterId: value.learningCenterId },});
 
     if (check) {
       loggerError.error(
         `ERROR: Siz Like Bosib Bo'lgansiz😊;  Method: ${req.method};  Like-Create`
       );
       return res.status(409).json({ error: "You have already liked" });
-    }
-
-    if (req.user.id !== value.userId) {
-      return res.status(403).json({error: "You can't like someone else's name."})
     }
 
     await Like.create(value)
@@ -150,39 +73,12 @@ async function remove(req, res) {
     await Like.destroy({ where: { id } });
 
     loggerInfo.info(`Method: ${req.method};  Successfully Deleted Like;`);
-    res.status(200).json({ message: "Deleted Like Successfully" });
+    res.status(200).json({ message: "Like Deleted Successfully" });
   } catch (e) {
     loggerError.error(`ERROR: ${e.message};  Method: ${req.method};  Likes-Delete`);
     res.status(500).json({ error: e.message });
   }
 }
 
-async function Search(req, res) {
-  try {
-    let { create } = req.query;
+export { create, remove };
 
-    create = create || "ASC";
-
-    let check = await Like.findAll({
-      include: [
-        {
-          model: User,
-          attributes: ["id", "firstname", "lastname"],
-        },
-        {
-          model: LearningCenter,
-          attributes: ["id", "name", "address"],
-        },
-      ],
-      order: [["createdAt", create.toUpperCase()]],
-    });
-
-    loggerInfo.info(`Method: ${req.method};  Su ccessfully Searched Like;`);
-    return res.status(200).json({ data: check });
-  } catch (e) {
-    loggerError.error(`ERROR: ${e.message};  Method: ${req.method};  Likes-Search`);
-    res.status(500).send({ error: e.message });
-  }
-}
-
-export { findAll, findOne, create, remove, Search };

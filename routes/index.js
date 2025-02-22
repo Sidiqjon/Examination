@@ -1,4 +1,5 @@
 import { Router } from "express";
+import express from "express";
 
 import userRoute from "./user.routes.js";
 import registerRoute from "./register.routes.js";
@@ -47,7 +48,7 @@ mainRoute.use("/refresh-token", refreshTokenRoute)
 mainRoute.use("/lc-students", studentsOfaLCRoute)
 mainRoute.use("/my-learning-centers", getMyCentersRoute)
 mainRoute.use("/lc-rating", lcRatingRoute)
-mainRoute.use("/users-excel", userExcelRoute)
+mainRoute.use("/excel", userExcelRoute)
 
 mainRoute.use("/resource-category", routeResourcesCategory);
 mainRoute.use("/resources", routeResources);
@@ -64,4 +65,69 @@ mainRoute.use("/comments", commentRoutes);
 mainRoute.use("/regions", regionRoutes);
 mainRoute.use("/userenrolments", userEnrolmentRoutes)
 
+mainRoute.use("/image", express.static("uploads"));
+
 export default mainRoute;
+
+
+/**
+ * @swagger
+ * /api/upload:
+ *   post:
+ *     summary: 📤 Upload an image 📤
+ *     tags:
+ *       - Upload
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       201:
+ *         description: ✅ Image uploaded successfully ✅
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: string
+ *                   example: "uploaded-image.jpg"
+ *       400:
+ *         description: ❌ Bad request ❌
+ *       500:
+ *         description: ❌ Internal server error ❌
+ */
+
+/**
+ * @swagger
+ * /api/image/{filename}:
+ *   get:
+ *     summary: 🖼️ Retrieve an uploaded image 🖼️
+ *     tags:
+ *       - Upload
+ *     parameters:
+ *       - in: path
+ *         name: filename
+ *         required: true
+ *         description: Name of the image file to retrieve.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: ✅ Image retrieved successfully ✅
+ *         content:
+ *           image/*:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       404:
+ *         description: ❌ Image not found ❌
+ */

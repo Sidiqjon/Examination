@@ -11,3 +11,4 @@ const updateCommentValidation = Joi.object({
   comment: Joi.string().min(1),
 });
 export { createCommentValidation,updateCommentValidation };
+

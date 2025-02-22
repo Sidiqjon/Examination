@@ -6,3 +6,4 @@ let verifyOtpRoute = Router();
 verifyOtpRoute.post("/", verifyOtp);
 
 export default verifyOtpRoute;
+

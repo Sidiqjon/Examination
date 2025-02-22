@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import { totp } from "otplib";
 import { validatePassword } from "../validations/user.validation.js"
-import {loggerError, loggerInfo} from "../logs/logger.js"
 
 dotenv.config();
 const OTPSECRET = process.env.OTPSECRET;
@@ -56,12 +55,12 @@ async function resPassword(req, res) {
         let existingUser = await User.findOne({ where: { email } });
         
         if (!existingUser) {
-            return res.status(404).json({ message: "Incorrect email!" });
+            return res.status(404).json({ message: "No account found with the Email address you provided!" });
         }
         
         let checkPwd = validatePassword(newPassword);
         if (!checkPwd) {
-          return res.status(400).json({ message: "Please, USE stronger password for your safety!" });
+          return res.status(400).json({ message: "Please, USE stronger password for your safety!For Example: #Abcd123$" });
         }
 
         let newHashedPwd = bcrypt.hashSync(newPassword, 7);
@@ -71,7 +70,7 @@ async function resPassword(req, res) {
         if (updated) {
             return res.status(200).json({ message: "Your password has been updated successfully!" });
         } else {
-            return res.status(500).json({ message: "Error while resetting password. Please try again." });
+            return res.status(400).json({ message: "Error while resetting password. Please try again." });
         }
 
     } catch (error) {

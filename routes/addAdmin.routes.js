@@ -5,6 +5,6 @@ import authorization from "../middlewares/authorization.js"
 
 let addAdminRoute = Router();
 
-addAdminRoute.post("/", authentication, authorization(["admin"]), createAdmin);
+addAdminRoute.post("/", authentication, authorization(["ADMIN"]), createAdmin);
 
 export default addAdminRoute;

@@ -61,14 +61,13 @@ async function create(req, res) {
       });
     }
 
-    if (req.user.id != value.userId) {
-      return res
-        .status(403)
-        .json({ error: "You cannot comment on behalf of another person." });
-    }
+    let comment = await Comment.create(value);
 
-    await Comment.create(value);
-    res.status(201).send({ message: "Comment Posted Successfully!" });
+    if (!comment) {
+      return res.status(400).json({ error: "Comment could not be created.Please try again" });
+    } 
+
+    res.status(201).send({ message: "Comment Posted Successfully!", data: comment });
   } catch (e) {
     res.status(500).send({ error: e.message });
   }
@@ -92,7 +91,7 @@ async function update(req, res) {
     if (comment.userId != req.user.id) {
       return res
         .status(403)
-        .json({ error: "You cannot comment on behalf of another person." });
+        .json({ error: "You cannot update a comment on behalf of another person." });
     }
 
     await Comment.update(value, { where: { id } });
@@ -138,7 +137,12 @@ async function Search(req, res) {
       let categories = await Comment.findAndCountAll({
         limit: take,
         offset: offset,
+        include: { all: true },
       });
+
+      if (categories.rows.length == 0) {
+        return res.status(404).json({ error: "Comment Pages Not Found" });
+      }
 
       return res.status(200).json({
         totalItems: categories.count,
@@ -183,7 +187,7 @@ async function Search(req, res) {
 
     res.status(200).json({ data: results });
   } catch (e) {
-    loggerError.error(`ERROR: ${e};  Method: ${req.method};  Comment-Search`);
+    loggerError.error(`ERROR: ${e.message};  Method: ${req.method};  Comment-Search`);
     res.status(500).send({ error: e.message });
   }
 }

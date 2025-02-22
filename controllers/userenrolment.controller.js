@@ -1,10 +1,9 @@
-import UserEnrolment from "../models/userEnrolment.model.js";
+import UserEnrolment from "../models/userenrolment.model.js";
 import User from "../models/user.model.js";
 import Branch from "../models/branch.model.js";
 import LearningCenter from "../models/learningCenter.model.js";
 import {
   userEnrolmentValidation,
-  userEnrolmentPatchValidation,
 } from "../validations/userenrolment.validation.js";
 import { Op } from "sequelize";
 import { loggerError, loggerInfo } from "../logs/logger.js";
@@ -12,14 +11,8 @@ import { loggerError, loggerInfo } from "../logs/logger.js";
 
 async function create(req, res) {
   try {
-    const { userId, branchId, learningCenterId, status } = req.body;
-
-    let userExists = await User.findByPk(userId);
-    if (!userExists) {
-      return res
-        .status(400)
-        .json({ error: "Invalid userId: User does not exist" });
-    }
+    const { branchId, learningCenterId } = req.body;
+    let userId = req.user.id;
 
     if (branchId) {
       let branchExists = await Branch.findByPk(branchId);
@@ -27,7 +20,7 @@ async function create(req, res) {
 
       if (check) {
         return res.status(409).json({
-          error: "You have previously registered with this branch.  ",
+          error: "You have previously registered with this branch.",
         });
       }
       if (!branchExists) {
@@ -56,6 +49,7 @@ async function create(req, res) {
       }
     }
 
+    req.body.userId = userId;
     const { error, value } = userEnrolmentValidation.validate(req.body);
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
@@ -64,11 +58,9 @@ async function create(req, res) {
     await UserEnrolment.create(value);
     res.status(201).send({ message: "User Enrolment Created Successfully" });
   } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
+    res.status(500).send({ error: e.message });
   }
 }
-
-
 
 async function remove(req, res) {
   try {
@@ -78,9 +70,9 @@ async function remove(req, res) {
       return res.status(404).json({ error: "UserEnrolment Not Found" });
     }
     await UserEnrolment.destroy({ where: { id } });
-    res.send({ message: "User Enrolment Deleted Successfully" });
+    res.status(200).send({ message: "User Enrolment Deleted Successfully" });
   } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
+    res.status(500).send({ error: e.message });
   }
 }
 

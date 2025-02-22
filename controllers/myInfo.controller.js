@@ -4,7 +4,7 @@ import resources from "../models/resource.model.js";
 import Like from "../models/like.model.js";
 import LearningCenter from "../models/learningCenter.model.js";
 import Branch from "../models/branch.model.js";
-import UserEnrolment from "../models/userEnrolment.model.js";
+import UserEnrolment from "../models/userenrolment.model.js";
 
 async function getMyInfo(req, res) {
     try {

@@ -8,3 +8,4 @@ route.get("/comments", getLCsByComments);
 route.get("/likes", getLCsByLikes);
 
 export default route
+

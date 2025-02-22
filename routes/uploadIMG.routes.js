@@ -12,4 +12,3 @@ uploadIMGRoute.post("/", upload.single("img"), (req, res) => {
 });
 
 export default uploadIMGRoute;
-

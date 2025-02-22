@@ -6,3 +6,4 @@ let sendOtpRoute = Router();
 sendOtpRoute.post("/", sendOtp);
 
 export default sendOtpRoute;
+

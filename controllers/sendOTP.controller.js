@@ -24,13 +24,13 @@ async function sendOtp(req, res) {
 
     let checkEmail = validateEmail(email);
     if (!checkEmail) {
-      return res.status(400).json({ message: "Email format is incorrect!" });
+      return res.status(400).json({ message: "Email format is incorrect!Format: 'example@example.com'" });
     }
 
     const existingUser = await User.findOne({ where: { email } });
     
     if (!existingUser) {
-      return res.status(409).json({ message: "No account found with the Email address you provided!" });
+      return res.status(404).json({ message: "No account found with the Email address you provided!" });
     }
 
     let otp = totp.generate(`${OTPSECRET}${email}`);

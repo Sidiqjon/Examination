@@ -1,7 +1,7 @@
 import joi from "joi";
 
 const ResourcesValidation = joi.object({
-  name: joi.string().min(2).required(),
+  name: joi.string().min(2).pattern(/^[a-zA-Z0-9\s]+$/).required(),
   img: joi.string().required(),
   media: joi.string().required(),
   description: joi.string().min(2).required(),
@@ -10,11 +10,10 @@ const ResourcesValidation = joi.object({
 });
 
 const ResourcesPatchValidation = joi.object({
-  name: joi.string().min(2),
+  name: joi.string().min(2).pattern(/^[a-zA-Z0-9\s]+$/),
   img: joi.string(),
   media: joi.string(),
   description: joi.string().min(2),
-  createdBy: joi.number().positive(),
   categoryId: joi.number().positive(),
 });
 

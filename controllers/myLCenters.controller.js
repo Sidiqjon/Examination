@@ -15,3 +15,4 @@ export async function getMyCenters(req, res) {
        res.status(500).json({ message: error.message });
     }
 }
+

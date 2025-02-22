@@ -45,3 +45,4 @@ LearningCenter.hasMany(Like, { foreignKey: "learningCenterId", onDelete: "CASCAD
 Like.belongsTo(LearningCenter, { foreignKey: "learningCenterId", onDelete: "CASCADE", onUpdate: "CASCADE" });
 
 export default Like;
+

@@ -1,72 +1,75 @@
 import Region from "../models/region.model.js";
-import { updateRegionValidation } from "../validations/region.validation.js";
+import { RegionValidation, RegionPatchValidation } from "../validations/region.validation.js";
+import { Op } from "sequelize";
+import { loggerError, loggerInfo } from "../logs/logger.js";
 
 async function findAll(req, res) {
   try {
     let allRegions = await Region.findAll();
     if (!allRegions.length) {
-      return res.status(404).json({ error: "No regions found" });
+      return res.status(404).json({ error: "Regions Not Found!" });
     }
-    res.send({ data: allRegions });
+    res.status(200).send({ data: allRegions });
   } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
+    res.status(500).send({ error: e.message });
   }
 }
 async function findOne(req, res) {
   try {
     let id = Number(req.params.id);
-    if (isNaN(id)) return res.status(400).json({ error: "Invalid ID format" });
 
     let region = await Region.findOne({ where: { id } });
     if (!region) {
       return res.status(404).json({ error: "Region Not Found" });
     }
 
-    res.send({ data: region });
+    res.status(200).send({ data: region });
   } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
+    res.status(500).send({ error: e.message });
   }
 }
 
 async function create(req, res) {
   try {
-    const { error, value } = updateRegionValidation.validate(req.body);
+    const { error, value } = RegionValidation.validate(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     let check = await Region.findOne({ where: { name: value.name } });
-    if (check) return res.status(400).json({ error: "Region already exists" });
+    if (check) return res.status(409).json({ error: "Region with this name already exists" });
 
-    await Region.create(value);
-    res.status(201).send({ message: "Region Created Successfully" });
+    let newRegion = await Region.create(value);
+
+    if (!newRegion) {
+      return res.status(400).json({ error: "Region Not Created.Please try again" });
+    }
+    res.status(201).send({ message: "Region Created Successfully", data: newRegion });
   } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
+    res.status(500).send({ error: e.message });
   }
 }
 
 async function update(req, res) {
   try {
     let id = Number(req.params.id);
-    if (isNaN(id)) return res.status(400).json({ error: "Invalid ID format" });
 
     let region = await Region.findOne({ where: { id } });
     if (!region) {
       return res.status(404).json({ error: "Region Not Found" });
     }
 
-    const { error, value } = updateRegionValidation.validate(req.body);
+    const { error, value } = RegionPatchValidation.validate(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     await Region.update(value, { where: { id } });
     res.send({ message: "Region Updated Successfully" });
   } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
+    res.status(500).send({ error: e.message });
   }
 }
 
 async function remove(req, res) {
   try {
     let id = Number(req.params.id);
-    if (isNaN(id)) return res.status(400).json({ error: "Invalid ID format" });
 
     let region = await Region.findOne({ where: { id } });
     if (!region) {
@@ -74,51 +77,80 @@ async function remove(req, res) {
     }
 
     await Region.destroy({ where: { id } });
-    res.send({ message: "Region Deleted Successfully" });
+
+    res.status(200).send({ message: "Region Deleted Successfully", data: region });
   } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
+    res.status(500).send({ error: e.message });
   }
 }
 
 async function Search(req, res) {
   try {
-    let { filter, sort, page = 1, limit = 10 } = req.query;
-    let queryOptions = {};
-    const offset = (page - 1) * limit;
-    queryOptions.limit = parseInt(limit);
-    queryOptions.offset = offset;
+    let { page, take } = req.query;
 
-    if (filter) {
-      try {
-        queryOptions.where = JSON.parse(filter);
-      } catch (e) {
-        return res.status(400).json({ error: "Invalid filter format" });
+    if (page || take) {
+      page = parseInt(page, 10) || 1;
+      take = parseInt(take, 10) || 10;
+
+      let offset = (page - 1) * take;
+      let regions = await Region.findAndCountAll({
+        limit: take,
+        offset: offset,
+        include: {all: true}});
+
+      if (regions.rows.length == 0) {
+        return res.status(404).json({ error: "Regions Pages Not Found" });
       }
+
+      return res.status(200).json({
+        totalItems: regions.count,
+        totalPages: Math.ceil(regions.count / take),
+        currentPage: page,
+        data: regions.rows,
+      });
     }
 
-    if (sort) {
-      try {
-        queryOptions.order = [JSON.parse(sort)];
-      } catch (e) {
-        return res.status(400).json({ error: "Invalid sort format" });
+    let query = req.query;
+    let conditions = {};
+    let order = [];
+
+    Object.keys(query).forEach((key) => {
+      if (key !== "sortField" && key !== "sortOrder") {
+        conditions[key] = {
+          [Op.like]: `%${query[key]}%`,
+        };
       }
-    }
-
-    let { rows: allRegions, count: totalCount } = await Region.findAndCountAll(queryOptions);
-    const totalPages = Math.ceil(totalCount / limit);
-
-    res.send({
-      data: allRegions,
-      pagination: {
-        totalCount,
-        totalPages,
-        currentPage: parseInt(page),
-        pageSize: parseInt(limit),
-      },
     });
+
+    if (query.sortField && query.sortOrder) {
+      const sortField = query.sortField;
+      const sortOrder =
+        query.sortOrder.toUpperCase() === "DESC" ? "DESC" : "ASC";
+      order.push([sortField, sortOrder]);
+    }
+
+    let results = await Region.findAll({
+      where: conditions,
+      order: order.length > 0 ? order : [["id", "ASC"]],
+      include: {all: true},
+    });
+    
+    if (results.length > 0) {
+      loggerInfo.info(
+        `Method: ${req.method};  Saccessfully Search Region; data: ${results}`
+      );
+      return res.status(200).json({ data: results });
+    }
+
+    loggerError.error(
+      `ERROR: Region Not Found;  Method: ${req.method};  Region-Search`
+    );
+    return res.status(404).json({ error: "Region Not Found" });
+
   } catch (e) {
-    res.status(500).send({ error: "Internal Server Error" });
+    res.status(500).send({ error: e.message });
   }
 }
 
 export { findAll, Search, findOne, create, update, remove };
+
