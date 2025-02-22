@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 
 dotenv.config()
-let JWTSECRET = process.env.JWTSECRET
+let JWTSECRET = process.env.JWTSECRET || "enigma"
 
 const authorization = (roles) => (req, res, next) => {
     let token = req.header("Authorization")

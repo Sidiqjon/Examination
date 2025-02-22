@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 dotenv.config();
-const JWTSECRET = process.env.JWTSECRET;            
-const REFRESHJWT = process.env.REFRESHJWT;
+const JWTSECRET = process.env.JWTSECRET || "enigma";            
+const REFRESHJWT = process.env.REFRESHJWT || "february";
 
 function genAccessToken(user) {
     return jwt.sign({ id: user.id, role: user.role, status: user.status }, JWTSECRET, { expiresIn: "1d" });

@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { totp } from "otplib";
 
 dotenv.config();
-const OTPSECRET = process.env.OTPSECRET;
+const OTPSECRET = process.env.OTPSECRET || "lantern";
 
 async function verifyOtp(req, res) {
     try {

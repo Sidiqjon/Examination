@@ -11,8 +11,8 @@ import {
   validateName } from "../validations/user.validation.js";
 
 dotenv.config();
-const OTPSECRET = process.env.OTPSECRET;
-const PASSWORD = process.env.PASSWORD;
+const OTPSECRET = process.env.OTPSECRET || "lantern";
+const PASSWORD = process.env.PASSWORD || "dhwj ofzg kswh ybzf";
 
 let transporter = nodemailer.createTransport({
   service: "gmail",

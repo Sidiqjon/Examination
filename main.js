@@ -5,21 +5,22 @@ import dotenv from "dotenv";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 
-dotenv.config();
-const PORT = process.env.PORT || 4000;
+dotenv.config()
+const PORT = process.env.PORT || 3000
 
 const options = {
     definition: {
-        openapi: "3.1.0",
-        info: {
-            title: "Examination",
-            version: "0.1.0",
-            description: "This is a simple CRUD API application made with Express and documented with Swagger",
+      openapi: "3.1.0",
+      info: {
+        title: "Examination",
+        version: "0.1.0",
+        description:
+          "This is a simple CRUD API application made with Express and documented with Swagger",
+      },
+      servers: [
+        {
+          url: "http://18.141.17.233:3000/",
         },
-        servers: [
-            {
-                url: "http://localhost:3000/", 
-            },
         ],
         components: {
             securitySchemes: {

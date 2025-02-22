@@ -8,7 +8,6 @@ import User from "../models/user.model.js";
 import { Op, fn, col, literal } from "sequelize";
 import LCField from "../models/lcfields.model.js";
 import Field from "../models/field.model.js";
-import { loggerError, loggerInfo } from "../logs/logger.js";
 import Like from "../models/like.model.js";
 import Comment from "../models/comment.model.js";
 import Branch from "../models/branch.model.js";
@@ -64,22 +63,13 @@ async function findAll(req, res) {
 
 
     if (all.length === 0) {
-      loggerError.error(
-        `ERROR: No information available.;  Method: ${req.method};  LearningCenter-FindAll`
-      );
       return res.status(404).json({ error: "Learning Centers Not Found" });
     }
 
-    loggerInfo.info(
-      `Method: ${req.method};  Saccessfully FindAll LearningCenter;`
-    );
+
 
     res.status(200).send({ data: all });
   } catch (e) {
-    loggerError.error(
-      `ERROR: ${e.message};  Method: ${req.method};  LearningCenters-FindAll`
-    );
-
     res.status(500).json({ error: e.message });
   }
 }
@@ -127,21 +117,11 @@ async function findOne(req, res) {
     });
 
     if (!one) {
-      loggerError.error(
-        `ERROR: Learning Center Not Found;  Method: ${req.method};  LearningCenter-FindOne`
-      );
       return res.status(404).json({ error: "Learning Center Not Found" });
     }
 
-    loggerInfo.info(
-      `Method: ${req.method};  Successfully FindOne LearningCenter;`
-    );
-
     res.status(200).json({ data: one });
   } catch (e) {
-    loggerError.error(
-      `ERROR: ${e.message};  Method: ${req.method};  LearningCenters-FindOne`
-    );
 
     res.status(500).json({ error: e.message });
   }
@@ -153,9 +133,6 @@ async function create(req, res) {
     let { error, value } = LearningCenterValidation.validate(req.body);
 
     if (error) {
-      loggerError.error(
-        `ERROR: ${error.details[0].message};  Method: ${req.method};  LearningCenter-Create`
-      );
       return res.status(400).json({ error: error.details[0].message });
     }
 
@@ -164,9 +141,6 @@ async function create(req, res) {
     });
 
     if (checkName) {
-      loggerError.error(
-        `There is a learning center with this name;  Method: ${req.method};  LearningCenter-Create`
-      );
       return res
         .status(409)
         .json({ error: "Learning Center with this name already exists!" });
@@ -175,9 +149,6 @@ async function create(req, res) {
     let checkRegion = await Region.findByPk(value.regionId);
 
     if (!checkRegion) {
-      loggerError.error(
-        `There is no such region with this ID;  Method: ${req.method};  LearningCenter-Create`
-      );
       return res
         .status(404)
         .json({ error: "There is no such region with this ID" });
@@ -189,9 +160,6 @@ async function create(req, res) {
       let check = await Field.findOne({ where: { id: field } });
 
       if (!check) {
-        loggerError.error(
-          `There are no such IDs in the Field table!;  Method: ${req.method};  LearningCenter-Create`
-        );
         return res
           .status(404)
           .json({ error: "There is no such field available with this ID" });
@@ -201,9 +169,6 @@ async function create(req, res) {
     let newLc = await LearningCenter.create(value);
 
     if (!newLc) {
-      loggerError.error(
-        `ERROR: Learning Center Not Created;  Method: ${req.method};  LearningCenter-Create`
-      );
       return res.status(400).json({ error: "Learning Center Not Created.Please try again" });
     }
 
@@ -211,15 +176,9 @@ async function create(req, res) {
       await LCField.create({ fieldId: field, learningCenterId: newLc.id });
     });
 
-    loggerInfo.info(
-      `Method: ${req.method};  Saccessfully Create LearningCenter;`
-    );
 
     res.status(201).json({ message: "New Learning Center Created Succesfully" });
   } catch (e) {
-    loggerError.error(
-      `ERROR: ${e.message};  Method: ${req.method};  LearningCenters-Create`
-    );
 
     res.status(500).json({ error: e.message });
   }
@@ -233,16 +192,10 @@ async function update(req, res) {
     let check = await LearningCenter.findOne({ where: { id } });
 
     if (!check) {
-      loggerError.error(
-        `ERROR: Learning Center Not Found;  Method: ${req.method};  LearningCenter-Update`
-      );
       return res.status(404).json({ error: "Learning Center Not Found" });
     }
 
     if (req.user.role != "ADMIN" && check.createdBy != req.user.id) {
-      loggerError.error(
-        `ERROR: You are not allowed to update this Learning Center;  Method: ${req.method};  LearningCenter-Update`
-      );
       return res
         .status(403)
         .json({ error: "You are not allowed to update this Learning Center" });
@@ -251,9 +204,6 @@ async function update(req, res) {
     let { error, value } = LearningCenterPatchValidation.validate(req.body);
 
     if (error) {
-      loggerError.error(
-        `ERROR: ${error.details[0].message};  Method: ${req.method};  LearningCenter-Update`
-      );
       return res.status(400).json({ error: error.details[0].message });
     }
 
@@ -261,9 +211,6 @@ async function update(req, res) {
       let checkRegion = await Region.findByPk(value.regionId);
 
       if (!checkRegion) {
-        loggerError.error(
-          `There is no such region with this ID;  Method: ${req.method};  LearningCenter-Update`
-        );
         return res
           .status(404)
           .json({ error: "There is no such region with this ID" });
@@ -275,15 +222,8 @@ async function update(req, res) {
     }
 
     await LearningCenter.update(value, { where: { id } });
-    loggerInfo.info(
-      `Method: ${req.method};  Saccessfully Update LearningCenter;`
-    );
     res.status(200).json({ message: "Learning Center Updated Successfully" });
   } catch (e) {
-    loggerError.error(
-      `ERROR: ${e.message};  Method: ${req.method};  LearningCenters-Update`
-    );
-
     res.status(500).json({ error: e.message });
   }
 }
@@ -294,16 +234,10 @@ async function remove(req, res) {
     let check = await LearningCenter.findOne({ where: { id } });
 
     if (!check) {
-      loggerError.error(
-        `ERROR: Learning Center Not Found;  Method: ${req.method};  LearningCenter-Delete`
-      );
       return res.status(404).json({ error: "Learning Center Not Found" });
     }
 
     if (req.user.role != "ADMIN" && check.createdBy != req.user.id) {
-      loggerError.error(
-        `ERROR: You are not allowed to delete this Learning Center;  Method: ${req.method};  LearningCenter-Update`
-      );
       return res
         .status(403)
         .json({ error: "You are not allowed to delete this Learning Center" });
@@ -314,14 +248,8 @@ async function remove(req, res) {
     }
 
     await LearningCenter.destroy({ where: { id } });
-    loggerInfo.info(
-      `Method: ${req.method};  Saccessfully Delete LearningCenter;`
-    );
     res.status(201).json({ message: "Learning Center Deleted Successfully" });
   } catch (e) {
-    loggerError.error(
-      `ERROR: ${e.message};  Method: ${req.method};  LearningCenters-Delete`
-    );
     res.status(500).json({ error: e.message });
   }
 }
@@ -377,9 +305,6 @@ async function Search(req, res) {
       });
 
       if (categories.rows.length === 0) {
-        loggerError.error(
-          `ERROR: Learning Center Not Found;  Method: ${req.method};  LearningCenter-Search`
-        );
         return res.status(404).json({ error: "Learning Centers Not Found" });
       }
 
@@ -459,20 +384,11 @@ async function Search(req, res) {
     });
 
     if (results.length === 0) {
-      loggerError.error(
-        `ERROR: Learning Center Not Found;  Method: ${req.method};  LearningCenter-Search`
-      );
       return res.status(404).json({ error: "Learning Centers Not Found" });
     }
 
-    loggerInfo.info(
-      `Method: ${req.method};  Successfully Search LearningCenter; data: ${results}`
-    );
     res.status(201).json({ data: results });
   } catch (e) {
-    loggerError.error(
-      `ERROR: ${e};  Method: ${req.method};  LearningCenters-Search`
-    );
     res.send({ error: e.message });
   }
 }

@@ -5,7 +5,6 @@ import {
   createCommentValidation,
   updateCommentValidation,
 } from "../validations/comment.validation.js";
-import { loggerError, loggerInfo } from "../logs/logger.js";
 import { Op } from "sequelize";
 
 async function findAll(req, res) {
@@ -177,17 +176,12 @@ async function Search(req, res) {
       include: { all: true },
     });
 
-    loggerInfo.info(
-      `Method: ${req.method};  Saccessfully Search Comment; data: ${results}`
-    );
-
     if (results.length == 0) {
       return res.status(404).json({ error: "Comment Pages Not Found" });
     }
 
     res.status(200).json({ data: results });
   } catch (e) {
-    loggerError.error(`ERROR: ${e.message};  Method: ${req.method};  Comment-Search`);
     res.status(500).send({ error: e.message });
   }
 }

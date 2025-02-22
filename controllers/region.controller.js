@@ -1,7 +1,6 @@
 import Region from "../models/region.model.js";
 import { RegionValidation, RegionPatchValidation } from "../validations/region.validation.js";
 import { Op } from "sequelize";
-import { loggerError, loggerInfo } from "../logs/logger.js";
 
 async function findAll(req, res) {
   try {
@@ -136,15 +135,9 @@ async function Search(req, res) {
     });
     
     if (results.length > 0) {
-      loggerInfo.info(
-        `Method: ${req.method};  Saccessfully Search Region; data: ${results}`
-      );
       return res.status(200).json({ data: results });
     }
 
-    loggerError.error(
-      `ERROR: Region Not Found;  Method: ${req.method};  Region-Search`
-    );
     return res.status(404).json({ error: "Region Not Found" });
 
   } catch (e) {
