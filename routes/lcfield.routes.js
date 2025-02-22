@@ -13,7 +13,7 @@ export default route
 /**
  * @swagger
  * tags:
- *   name: LearningCenterField
+ *   name: LearningCenterFieldw
  *   description: 🏫 Manage Learning Center Fields
  */
 
@@ -99,7 +99,7 @@ export default route
 
 /**
  * @swagger
- * /api/lcfields:
+ * /api/lcfields/{id}:
  *   delete:
  *     summary: ❌ Remove fields from a Learning Center
  *     description: Remove one or more fields from a specific learning center. Only accessible by ADMIN or CEO.

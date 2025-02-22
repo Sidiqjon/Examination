@@ -50,11 +50,11 @@ export default registerRoute;
  *               password:
  *                 type: string
  *                 format: password
- *                 example: #Abcd123$
+ *                 example: "#Abcd123$"
  *                 description: Strong password with uppercase, lowercase, numbers, and special characters.
  *               phoneNumber:
  *                 type: string
- *                 example: +998900000000
+ *                 example: "+998900000000"
  *                 description: Valid phone number format.
  *               role:
  *                 type: string

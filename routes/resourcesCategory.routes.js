@@ -22,7 +22,7 @@ export default route
 
 /**
  * @swagger
- * /resource-category/search:
+ * /api/resource-category/search:
  *   get:
  *     summary: Search resource categories 🔎
  *     tags: [ResourceCategory]
@@ -53,7 +53,7 @@ export default route
 
 /**
  * @swagger
- * /resource-category:
+ * /api/resource-category:
  *   get:
  *     summary: Get all resource categories 📂
  *     tags: [ResourceCategory]
@@ -66,7 +66,7 @@ export default route
 
 /**
  * @swagger
- * /resource-category/{id}:
+ * /api/resource-category/{id}:
  *   get:
  *     summary: Get a single resource category by ID 🆔
  *     tags: [ResourceCategory]
@@ -88,7 +88,7 @@ export default route
 
 /**
  * @swagger
- * /resource-category:
+ * /api/resource-category:
  *   post:
  *     summary: Create a new resource category ➕
  *     tags: [ResourceCategory]
@@ -123,7 +123,7 @@ export default route
 
 /**
  * @swagger
- * /resource-category/{id}:
+ * /api/resource-category/{id}:
  *   patch:
  *     summary: Update a resource category ✏️
  *     tags: [ResourceCategory]
@@ -162,7 +162,7 @@ export default route
 
 /**
  * @swagger
- * /resource-category/{id}:
+ * /api/resource-category/{id}:
  *   delete:
  *     summary: Delete a resource category 🗑️
  *     tags: [ResourceCategory]

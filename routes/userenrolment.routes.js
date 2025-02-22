@@ -18,7 +18,7 @@ export default router;
 
 /**
  * @swagger
- * /userenrolments:
+ * /api/userenrolments:
  *   post:
  *     summary: Register a user in a learning center or branch
  *     description: Allows a user to enroll in a learning center or a branch. Users cannot enroll in both at the same time.
@@ -104,7 +104,7 @@ export default router;
 
 /**
  * @swagger
- * /userenrolments/{id}:
+ * /api/userenrolments/{id}:
  *   delete:
  *     summary: Remove a user enrolment
  *     description: Deletes a user enrolment. Only the enrolled user or an admin can delete it.

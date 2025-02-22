@@ -11,7 +11,7 @@ export default addAdminRoute;
 
 /**
  * @swagger
- * /api/admins:
+ * /api/add-admin:
  *   post:
  *     summary: 🔑 Add Admin
  *     description: Create a new admin account. Only an existing admin can perform this action.

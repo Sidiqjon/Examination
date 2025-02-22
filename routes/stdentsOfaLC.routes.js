@@ -18,7 +18,7 @@ export default studentsOfaLCRoute;
 
 /**
  * @swagger
- * /studentsOfaLC/{id}:
+ * /api/lc-students/{id}:
  *   get:
  *     summary: Get students of a learning center
  *     description: Fetches a list of students enrolled in a specific learning center. Only accessible by ADMIN and CEO roles. A CEO can only access their own learning center.

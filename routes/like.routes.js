@@ -18,7 +18,7 @@ export default route
 
 /**
  * @swagger
- * /likes:
+ * /api/likes:
  *   post:
  *     summary: ❤️ Like a Learning Center
  *     description: Users can like a learning center. A user can only like once per learning center.
@@ -60,7 +60,7 @@ export default route
 
 /**
  * @swagger
- * /likes/{id}:
+ * /api/likes/{id}:
  *   delete:
  *     summary: 💔 Unlike a Learning Center
  *     description: Users can remove their like from a learning center.
