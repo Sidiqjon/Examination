@@ -40,3 +40,4 @@ async function getStudents (req, res) {
 }
 
 export default getStudents;
+

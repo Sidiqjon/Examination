@@ -7,3 +7,4 @@ const userEnrolmentValidation = Joi.object({
 });
 
 export { userEnrolmentValidation };
+

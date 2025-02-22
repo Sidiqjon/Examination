@@ -198,3 +198,4 @@ async function Search(req, res) {
 }
 
 export { findAll, findOne, create, update, remove, Search };
+

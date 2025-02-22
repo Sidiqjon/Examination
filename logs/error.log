@@ -1,0 +1,195 @@
+{
+  message: 'ERROR: Profession Not Found;  Method: GET;  Profession-FindOne',
+  level: 'error',
+  timestamp: '2025-02-20T05:16:20.883Z'
+}
+{
+  message: 'ERROR: Profession Not Found;  Method: GET;  Profession-FindOne',
+  level: 'error',
+  timestamp: '2025-02-20T05:17:49.812Z'
+}
+{
+  message: 'ERROR: Profession Not Found;  Method: GET;  Profession-FindOne',
+  level: 'error',
+  timestamp: '2025-02-20T05:24:57.906Z'
+}
+{
+  message: 'ERROR: Such a profession exists;  Method: POST;  Profession-Create',
+  level: 'error',
+  timestamp: '2025-02-20T05:25:48.204Z'
+}
+{
+  message: 'ERROR: "img" is not allowed to be empty;  Method: POST;  Profession-Create',
+  level: 'error',
+  timestamp: '2025-02-20T05:26:07.310Z'
+}
+{
+  message: 'ERROR: Such a profession exists;  Method: POST;  Profession-Create',
+  level: 'error',
+  timestamp: '2025-02-20T05:27:01.754Z'
+}
+{
+  message: 'ERROR: Such a profession exists;  Method: PATCH;  Profession-Update',
+  level: 'error',
+  timestamp: '2025-02-20T05:31:21.200Z'
+}
+{
+  message: 'ERROR: path is not defined;  Method: PATCH;  Profession-Update',
+  level: 'error',
+  timestamp: '2025-02-20T05:37:44.137Z'
+}
+{
+  message: 'ERROR: Profession Not Found;  Method: DELETE;  Profession-Delete',
+  level: 'error',
+  timestamp: '2025-02-20T05:45:27.403Z'
+}
+{
+  message: 'ERROR: Profession Not Found;  Method: PATCH;  Profession-Update',
+  level: 'error',
+  timestamp: '2025-02-20T05:51:05.879Z'
+}
+{
+  message: "ERROR: Invalid value { undefined: '%A%' };  Method: GET;  Feild-Search",
+  level: 'error',
+  timestamp: '2025-02-20T07:06:57.593Z'
+}
+{
+  message: "ERROR: Invalid value { undefined: '%A%' };  Method: GET;  Feild-Search",
+  level: 'error',
+  timestamp: '2025-02-20T07:08:37.361Z'
+}
+{
+  message: 'ERROR: No information available.;  Method: GET;  Field-Search',
+  level: 'error',
+  timestamp: '2025-02-20T07:10:03.560Z'
+}
+{
+  message: "ERROR: Unknown column 'fields.subjectI' in 'where clause';  Method: GET;  Feild-Search",
+  level: 'error',
+  timestamp: '2025-02-20T07:10:10.730Z'
+}
+{
+  message: 'ERROR: No information available.;  Method: GET;  Field-Search',
+  level: 'error',
+  timestamp: '2025-02-20T07:10:36.696Z'
+}
+{
+  message: 'ERROR: Invalid professionId: Profession does not exist.;  Method: POST;  Field-Create',
+  level: 'error',
+  timestamp: '2025-02-20T07:13:34.426Z'
+}
+{
+  message: 'ERROR: Such a field already exists.;  Method: POST;  Field-Create',
+  level: 'error',
+  timestamp: '2025-02-20T07:16:18.841Z'
+}
+{
+  message: 'ERROR: You cannot assign a value to subjectId and professionId at the same time!;  Method: POST;  Field-Create',
+  level: 'error',
+  timestamp: '2025-02-20T07:16:54.066Z'
+}
+{
+  message: 'ERROR: Either professionId or subjectId must be provided.;  Method: POST;  Field-Create',
+  level: 'error',
+  timestamp: '2025-02-20T07:17:07.940Z'
+}
+{
+  message: 'ERROR: Such a field already exists.;  Method: POST;  Field-Create',
+  level: 'error',
+  timestamp: '2025-02-20T07:17:17.054Z'
+}
+{
+  message: 'ERROR: Such a field exists;  Method: POST;  Field-Create',
+  level: 'error',
+  timestamp: '2025-02-20T07:23:56.131Z'
+}
+{
+  message: 'ERROR: Such a field exists;  Method: POST;  Field-Create',
+  level: 'error',
+  timestamp: '2025-02-20T07:25:42.267Z'
+}
+{
+  message: 'ERROR: Invalid professionId: Profession does not exist.;  Method: PATCH;  Field-Update',
+  level: 'error',
+  timestamp: '2025-02-20T07:27:54.331Z'
+}
+{
+  message: 'ERROR: Such a field exists;  Method: POST;  Field-Create',
+  level: 'error',
+  timestamp: '2025-02-20T07:30:41.748Z'
+}
+{
+  message: 'ERROR: Resources Not Found;  Method: GET;  Resources-FindOne',
+  level: 'error',
+  timestamp: '2025-02-20T10:03:17.225Z'
+}
+{
+  message: 'ERROR: "name" is required;  Method: POST;  Resources-Create',
+  level: 'error',
+  timestamp: '2025-02-20T17:23:59.723Z'
+}
+{
+  message: 'ERROR: "name" is required;  Method: POST;  Resources-Create',
+  level: 'error',
+  timestamp: '2025-02-20T19:16:21.154Z'
+}
+{
+  message: 'ERROR: "name" is required;  Method: POST;  Resources-Create',
+  level: 'error',
+  timestamp: '2025-02-20T19:18:29.805Z'
+}
+{
+  message: 'ERROR: "name" is required;  Method: POST;  Resources-Create',
+  level: 'error',
+  timestamp: '2025-02-20T19:20:05.941Z'
+}
+{
+  message: 'ERROR: "name" is required;  Method: POST;  Resources-Create',
+  level: 'error',
+  timestamp: '2025-02-20T19:20:08.129Z'
+}
+{
+  message: 'ERROR: "name" is required;  Method: POST;  Resources-Create',
+  level: 'error',
+  timestamp: '2025-02-20T19:20:32.957Z'
+}
+{
+  message: 'ERROR: UserId Not Found;  Method: POST;  Like-Create',
+  level: 'error',
+  timestamp: '2025-02-21T03:25:58.780Z'
+}
+{
+  message: 'ERROR: LearningCenter Not Found;  Method: POST;  Like-Create',
+  level: 'error',
+  timestamp: '2025-02-21T03:26:04.743Z'
+}
+{
+  message: "ERROR: Siz Like Bosib Bo'lgansiz😊;  Method: POST;  Like-Create",
+  level: 'error',
+  timestamp: '2025-02-21T03:26:12.763Z'
+}
+{
+  message: "ERROR: Expression #11 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'ssa_examination.branches.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by;  Method: GET;  LearningCenters-FindAll",
+  level: 'error',
+  timestamp: '2025-02-21T23:21:09.421Z'
+}
+{
+  message: "ERROR: SequelizeDatabaseError: Unknown column 'learningCenter.regionId-1' in 'where clause';  Method: GET;  LearningCenters-Search",
+  level: 'error',
+  timestamp: '2025-02-21T23:56:06.861Z'
+}
+{
+  message: "ERROR: SequelizeDatabaseError: Unknown column 'NaN' in 'where clause';  Method: GET;  LearningCenters-Search",
+  level: 'error',
+  timestamp: '2025-02-21T23:58:26.552Z'
+}
+{
+  message: 'ERROR: Learning Center Not Found;  Method: GET;  LearningCenter-Search',
+  level: 'error',
+  timestamp: '2025-02-22T00:01:06.653Z'
+}
+{
+  message: 'ERROR: Learning Center Not Found;  Method: GET;  LearningCenter-Search',
+  level: 'error',
+  timestamp: '2025-02-22T00:03:26.575Z'
+}

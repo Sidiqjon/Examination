@@ -62,3 +62,4 @@ Resource.belongsTo(ResourceCategory, { foreignKey: "categoryId", onDelete: "CASC
 
 export default Resource;
 
+

@@ -213,3 +213,4 @@ const remove = async (req, res) => {
 };
 
 export { getAll, getOne, getAllCeo, update, remove };
+

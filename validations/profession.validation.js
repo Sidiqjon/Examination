@@ -10,3 +10,4 @@ const ProfessionPatchValidation = joi.object({
 });
 
 export { ProfessionValidation, ProfessionPatchValidation };
+

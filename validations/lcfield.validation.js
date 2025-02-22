@@ -10,4 +10,3 @@ const LcFieldPatchValidation = joi.object({
 });
 
 export { LcFieldValidation, LcFieldPatchValidation };
-

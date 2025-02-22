@@ -147,3 +147,4 @@ async function Search(req, res) {
 
 export { findAll, Search, findOne, create, update, remove };
 
+

@@ -43,4 +43,3 @@ Field.belongsToMany(LearningCenter, { through: LCfield, foreignKey: "fieldId", o
 LearningCenter.belongsToMany(Field, { through: LCfield, foreignKey: "learningCenterId", onDelete: "CASCADE", onUpdate: "CASCADE", });
 
 export default LCfield;
-

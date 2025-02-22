@@ -48,3 +48,4 @@ async function sendOtp(req, res) {
 }
 
 export default sendOtp;
+

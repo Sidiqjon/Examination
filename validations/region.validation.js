@@ -9,3 +9,4 @@ const RegionPatchValidation = Joi.object({
 });
 
 export { RegionValidation, RegionPatchValidation };
+

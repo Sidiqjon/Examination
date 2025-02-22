@@ -67,4 +67,3 @@ User.hasMany(LearningCenter, { foreignKey: "createdBy", onDelete: "CASCADE", onU
 LearningCenter.belongsTo(User, { foreignKey: "createdBy", onDelete: "CASCADE", onUpdate: "CASCADE" })
 
 export default LearningCenter;
-
