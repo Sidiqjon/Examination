@@ -21,7 +21,6 @@ const deleteOldImage = (imgPath) => {
   }
 };
 
-
 async function findAll(req, res) {
   try {
     let all = await LearningCenter.findAll({
@@ -352,8 +351,8 @@ async function Search(req, res) {
           [
             literal(`(
               SELECT COUNT(*) 
-              FROM likes 
-              WHERE likes.learningCenterId = LearningCenter.id
+              FROM Likes 
+              WHERE Likes.learningCenterId = LearningCenter.id
             )`),
             "numberOfLikes",
           ],
