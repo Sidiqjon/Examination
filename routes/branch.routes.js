@@ -22,7 +22,7 @@ export default route;
 
 /**
  * @swagger
- * /branches:
+ * /api/branches:
  *   get:
  *     summary: Get all branches 📍
  *     description: Retrieve a list of all branches with optional filtering, pagination, and sorting.
@@ -47,7 +47,7 @@ export default route;
 
 /**
  * @swagger
- * /branches/{id}:
+ * /api/branches/{id}:
  *   get:
  *     summary: Get a single branch by ID 🔍
  *     description: Retrieve details of a specific branch.
@@ -68,7 +68,7 @@ export default route;
 
 /**
  * @swagger
- * /branches:
+ * /api/branches:
  *   post:
  *     summary: Create a new branch ➕
  *     description: Admins and CEOs can create a new branch.
@@ -108,7 +108,7 @@ export default route;
 
 /**
  * @swagger
- * /branches/{id}:
+ * /api/branches/{id}:
  *   patch:
  *     summary: Update a branch ✏️
  *     description: Admins and CEOs can update branch details.
@@ -152,7 +152,7 @@ export default route;
 
 /**
  * @swagger
- * /branches/{id}:
+ * /api/branches/{id}:
  *   delete:
  *     summary: Delete a branch ❌
  *     description: Admins and CEOs can delete a branch.

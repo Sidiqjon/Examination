@@ -84,7 +84,11 @@ export default route;
  *         description: No subjects available
  *       500:
  *         description: Server error
- * 
+ */
+
+/**
+ * @swagger
+ * /api/subjects:
  *   post:
  *     summary: ➕ Create a new subject
  *     tags: [Subjects]
@@ -137,7 +141,11 @@ export default route;
  *         description: Subject not found
  *       500:
  *         description: Server error
- * 
+ */
+
+/**
+ * @swagger
+ * /api/subjects/{id}:
  *   patch:
  *     summary: ✏️ Update a subject
  *     tags: [Subjects]
@@ -174,7 +182,12 @@ export default route;
  *         description: Subject with the same name already exists
  *       500:
  *         description: Server error
- * 
+ *
+ */
+
+/**
+ * @swagger
+ * /api/subjects/{id}:
  *   delete:
  *     summary: 🗑️ Delete a subject
  *     tags: [Subjects]

@@ -107,7 +107,10 @@ export default userRoute;
  *                 message:
  *                   type: string
  *                   example: "Internal server error."
- *
+ */
+
+/**
+ * @swagger
  * /api/users/{id}:
  *   get:
  *     summary: 🔍 Get a Single User
@@ -142,7 +145,11 @@ export default userRoute;
  *                   example: "User not found."
  *       500:
  *         description: ❌ Internal server error.
- *
+ */
+
+/**
+ * @swagger
+ * /api/users/{id}:
  *   patch:
  *     summary: ✏️ Update a User
  *     description: Update user details. Only admins can update role and status.
@@ -172,7 +179,11 @@ export default userRoute;
  *         description: ❌ User not found.
  *       500:
  *         description: ❌ Internal server error.
- *
+ */
+
+/**
+ * @swagger
+ * /api/users/{id}:
  *   delete:
  *     summary: 🗑️ Delete a User
  *     description: Delete a user by ID. Admins can delete any user.

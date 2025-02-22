@@ -22,7 +22,7 @@ export default router;
 
 /**
  * @swagger
- * /comments/search:
+ * /api/comments/search:
  *   get:
  *     summary: Search comments with filters and pagination
  *     tags: [Comments]
@@ -59,7 +59,7 @@ export default router;
 
 /**
  * @swagger
- * /comments:
+ * /api/comments:
  *   get:
  *     summary: Get all comments
  *     tags: [Comments]
@@ -74,7 +74,7 @@ export default router;
 
 /**
  * @swagger
- * /comments/{id}:
+ * /api/comments/{id}:
  *   get:
  *     summary: Get a comment by ID
  *     tags: [Comments]
@@ -96,7 +96,7 @@ export default router;
 
 /**
  * @swagger
- * /comments:
+ * /api/comments:
  *   post:
  *     summary: Create a new comment
  *     tags: [Comments]
@@ -133,7 +133,7 @@ export default router;
 
 /**
  * @swagger
- * /comments/{id}:
+ * /api/comments/{id}:
  *   patch:
  *     summary: Update a comment by ID
  *     tags: [Comments]
@@ -169,7 +169,7 @@ export default router;
 
 /**
  * @swagger
- * /comments/{id}:
+ * /api/comments/{id}:
  *   delete:
  *     summary: Delete a comment by ID
  *     tags: [Comments]

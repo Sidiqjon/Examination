@@ -23,7 +23,7 @@ export default router;
 
 /**
  * @swagger
- * /regions/search:
+ * /api/regions/search:
  *   get:
  *     summary: 🔍 Search regions
  *     tags: [Regions]
@@ -80,7 +80,7 @@ export default router;
 
 /**
  * @swagger
- * /regions:
+ * /api/regions:
  *   get:
  *     summary: 📜 Get all regions
  *     tags: [Regions]
@@ -100,6 +100,12 @@ export default router;
  *         description: No regions found
  *       500:
  *         description: Internal server error
+ */
+
+
+/**
+ * @swagger
+ * /api/regions:
  *   post:
  *     summary: ✨ Create a new region
  *     tags: [Regions]
@@ -133,7 +139,7 @@ export default router;
 
 /**
  * @swagger
- * /regions/{id}:
+ * /api/regions/{id}:
  *   get:
  *     summary: 🏙️ Get a specific region
  *     tags: [Regions]
@@ -160,6 +166,12 @@ export default router;
  *         description: Region not found
  *       500:
  *         description: Internal server error
+ */
+
+
+/**
+ * @swagger
+ * /api/regions/{id}:
  *   patch:
  *     summary: ✏️ Update a region
  *     tags: [Regions]
@@ -187,6 +199,12 @@ export default router;
  *         description: Region not found
  *       500:
  *         description: Internal server error
+ */
+
+
+/**
+ * @swagger
+ * /api/regions/{id}:
  *   delete:
  *     summary: 🗑️ Delete a region
  *     tags: [Regions]

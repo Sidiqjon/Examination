@@ -23,7 +23,7 @@ export default route
 
 /**
  * @swagger
- * /learningcenter/search:
+ * /api/learning-centers/search:
  *   get:
  *     summary: 🔍 Search learning centers
  *     tags: [learningcenter]
@@ -62,7 +62,7 @@ export default route
 
 /**
  * @swagger
- * /learningcenter:
+ * /api/learning-centers:
  *   get:
  *     summary: 📄 Get all learning centers
  *     tags: [learningcenter]
@@ -71,6 +71,12 @@ export default route
  *         description: List of all learning centers
  *       500:
  *         description: Internal server error
+ */
+
+
+/**
+ * @swagger
+ * /api/learning-centers:
  *   post:
  *     summary: ➕ Create a new learning center
  *     tags: [learningcenter]
@@ -123,7 +129,7 @@ export default route
 
 /**
  * @swagger
- * /learningcenter/{id}:
+ * /api/learning-centers/{id}:
  *   get:
  *     summary: 📌 Get a learning center by ID
  *     tags: [learningcenter]
@@ -139,6 +145,11 @@ export default route
  *         description: Learning center details
  *       404:
  *         description: Learning center not found
+ */ 
+
+/**
+ * @swagger
+ * /api/learning-centers/{id}:
  *   patch:
  *     summary: ✏️ Update a learning center
  *     tags: [learningcenter]
@@ -187,6 +198,11 @@ export default route
  *         description: Forbidden (only ADMIN or CEO)
  *       404:
  *         description: Learning center not found
+ */
+
+/**
+ * @swagger
+ * /api/learning-centers/{id}:
  *   delete:
  *     summary: 🗑️ Delete a learning center
  *     tags: [learningcenter]
