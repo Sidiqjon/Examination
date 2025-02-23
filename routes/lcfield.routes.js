@@ -6,7 +6,7 @@ import authorization from "../middlewares/authorization.js"
 let route = Router()
 
 route.post("/", authentication, authorization(["ADMIN", "CEO"]), create)
-route.delete("/", authentication, authorization(["ADMIN", "CEO"]), remove)
+route.delete("/:id", authentication, authorization(["ADMIN", "CEO"]), remove)
 
 export default route
 
