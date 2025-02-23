@@ -11,3 +11,4 @@ let db = new Sequelize ({
 })
 
 export default db
+
