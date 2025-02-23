@@ -21,7 +21,8 @@ const deleteOldImage = (imgPath) => {
 async function findAll(req, res) {
   try {
     let all = await Resource.findAll({
-      include: { all: true },
+      include: { model: ResourceCategory },
+      include: { model: User, attributes: { exclude: ["password"] } },
     });
 
     if (all.length === 0) {
@@ -37,7 +38,7 @@ async function findAll(req, res) {
 async function findOne(req, res) {
   try {
     let { id } = req.params;
-    let one = await Resource.findByPk(id, { include: { all: true } });
+    let one = await Resource.findByPk(id, { include: { model: ResourceCategory }, include: { model: User, attributes: { exclude: ["password"] } } });
 
     if (!one) {
       return res.status(404).json({ error: "Resources Not Found" });
@@ -164,7 +165,13 @@ async function Search(req, res) {
       let categories = await Resource.findAndCountAll({
         limit: take,
         offset: offset,
-        include: {all: true,}
+        include: {
+          model: ResourceCategory,
+        },
+        include: {
+          model: User,
+          attributes: { exclude: ["password"] },
+        }
       });
 
       if (categories.rows.length == 0) {
@@ -201,7 +208,14 @@ async function Search(req, res) {
     let results = await Resource.findAll({
       where: conditions,
       order: order.length > 0 ? order : [["id", "ASC"]],
-      include: {all: true,}});
+      include: {
+        model: ResourceCategory,
+      },
+      include: {
+        model: User,
+        attributes: { exclude: ["password"] },
+      }
+      });
 
     if (results.length === 0) {
       return res.status(404).json({ error: "Resources Not Found" });
