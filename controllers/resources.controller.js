@@ -57,12 +57,6 @@ async function create(req, res) {
       return res.status(400).json({ error: error.details[0].message });
     }
 
-    let check = await Resource.findOne({
-      where: { name: value.name },
-    });
-    if (check) {
-      return res.status(409).json({ error: "Resources with this name already exists.Please try another name!" });}
-
     let checkCategory = await ResourceCategory.findOne({
       where: { id: value.categoryId },
     });
@@ -100,15 +94,6 @@ async function update(req, res) {
 
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
-    }
-
-    if (value.name) {
-      let check = await Resource.findOne({
-        where: { name: value.name },
-      });
-      if (check) {
-        return res.status(409).json({ error: "Resources with this name already exists.Please try another name!" });
-      }
     }
 
     if (value.categoryId) {
