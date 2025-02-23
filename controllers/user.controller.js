@@ -51,6 +51,7 @@ const getUsersForAdmin = async (req, res) => {
     if (status) where.status = status;
 
     const users = await User.findAndCountAll({
+      attributes: { exclude: ["password"] },
       where,
       include: {all: true},
       order: [[sortBy, sortOrder]],
@@ -84,6 +85,7 @@ const getAllCeo = async (req, res) => {
 
     if (page) {
       const ceos = await User.findAndCountAll({
+        attributes: { exclude: ["password"] },
         where,
         include: {all: true},
         order: [[sortBy, sortOrder]],
@@ -100,6 +102,7 @@ const getAllCeo = async (req, res) => {
       });
     } else {
       const ceos = await User.findAll({
+        attributes: { exclude: ["password"] },
         where,
         include: {all: true},
         order: [[sortBy, sortOrder]],

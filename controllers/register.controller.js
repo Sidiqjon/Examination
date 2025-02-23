@@ -92,9 +92,11 @@ async function Register(req, res) {
           html: `<p>Please use the following OTP to confirm your email account: ${otp}</p>`,
         });
 
+        const { password, ...newUser } = result.dataValues
+
         res.status(201).json({
           message: `${firstName}, You registered successfully! An OTP has been sent to your Email!`,
-          otp,data: result
+          otp,data: newUser
         });
       } catch (error) {
         res.status(503).json({ message: "Email service is unavailable, please try again later.", error: error.message });

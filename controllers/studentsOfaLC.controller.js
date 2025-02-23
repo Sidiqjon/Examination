@@ -2,6 +2,7 @@ import LearningCenter from "../models/learningCenter.model.js";
 import UserEnrolment from "../models/userenrolment.model.js";
 import User from "../models/user.model.js";
 import { Op } from "sequelize";
+import e from "express";
 
 async function getStudents (req, res) {
   try {
@@ -24,6 +25,7 @@ async function getStudents (req, res) {
         include: [
           {
             model: User, 
+            attributes: { exclude: ['password'] }
           },
         ],
       });
