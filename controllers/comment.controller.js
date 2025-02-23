@@ -179,7 +179,6 @@ async function Search(req, res) {
     });
 
     if (query.sortField && query.sortOrder) {
-      // sortField should be checked whether it is a valid column or not
       if (!Comment.rawAttributes[query.sortField]) {
         return res.status(400).json({ error: "Invalid sortField" });
       }

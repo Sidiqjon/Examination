@@ -27,6 +27,9 @@ async function findAll(req, res) {
     });
 
     if (sortField && sortOrder) {
+      if (!Branch.rawAttributes[sortField]) {
+        return res.status(400).json({ error: "Invalid Sort Field" });
+      }
       orderClause = [[sortField, sortOrder.toUpperCase()]];
     }
 

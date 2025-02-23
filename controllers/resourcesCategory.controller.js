@@ -174,6 +174,9 @@ async function Search(req, res) {
     });
 
     if (query.sortField && query.sortOrder) {
+      if (!ResourceCategory.rawAttributes[query.sortField]) {
+        return res.status(400).json({ error: "Invalid Sort Field" });
+      }
       const sortField = query.sortField;
       const sortOrder =
         query.sortOrder.toUpperCase() === "DESC" ? "DESC" : "ASC";
