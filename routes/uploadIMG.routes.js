@@ -8,7 +8,7 @@ uploadIMGRoute.post("/", upload.single("img"), (req, res) => {
    if (!req.file) {
       return res.status(400).send("No file uploaded.");
    }
-   res.status(200).send({ message: `IMG uploaded: ${req.file.filename}` })
+   res.status(201).send({ message: `IMG uploaded: ${req.file.filename}` })
 });
 
 export default uploadIMGRoute;
