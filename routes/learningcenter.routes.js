@@ -108,9 +108,6 @@ export default route
  *               branchNumber:
  *                 type: integer
  *                 example: 2
- *               createdBy:
- *                 type: integer
- *                 example: 5
  *               lcfield:
  *                 type: array
  *                 items:
