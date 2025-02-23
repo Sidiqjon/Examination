@@ -171,12 +171,6 @@ export default route
  *               img:
  *                 type: string
  *                 example: "https://example.com/new-image.jpg"
- *               professionId:
- *                 type: integer
- *                 nullable: true
- *               subjectId:
- *                 type: integer
- *                 nullable: true
  *     responses:
  *       200:
  *         description: Field updated successfully

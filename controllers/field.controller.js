@@ -128,36 +128,6 @@ async function update(req, res) {
       return res.status(400).json({ error: error.details[0].message });
     }
 
-    if (value.professionId && value.subjectId) {
-
-      return res.status(400).json({
-        error:
-          "You cannot assign a value to subjectId and professionId at the same time!",
-      });
-    }
-
-    if (!value.professionId && !value.subjectId) {
-      return res.status(400).json({ 
-        error: "Either professionId or subjectId must be provided.",
-      });
-    }
-
-    if (value.professionId) {
-      let professionExists = await Profession.findByPk(value.professionId);
-      if (!professionExists) {
- 
-        return res.status(404).json({ error: "Invalid professionId: Profession does not exist." });
-      }
-    }
-
-    if (value.subjectId) {
-      let subjectExists = await Subject.findByPk(value.subjectId);
-      if (!subjectExists) {
-
-        return res.status(404).json({ error: "Invalid subjectId: Subject does not exist." });
-    }
-    }
-
     if (value.img) {
       deleteOldImage(check.img);
     }
