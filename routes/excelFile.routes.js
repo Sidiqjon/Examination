@@ -36,7 +36,7 @@ export default ExcelRoute
  *               type: string
  *               format: binary
  *       403:
- *         description: Unauthorized, only ADMIN or CEO can access.
+ *         description: Unauthorized, only ADMIN can access.
  *       500:
  *         description: Server error.
  */
