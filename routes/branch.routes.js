@@ -13,6 +13,8 @@ route.delete("/:id", authentication, authorization(["ADMIN", "CEO"]), remove);
 
 export default route;
 
+
+
 /**
  * @swagger
  * tags:
@@ -38,12 +40,47 @@ export default route;
  *         schema:
  *           type: integer
  *         description: Number of records per page.
+ *       - in: query
+ *         name: name
+ *         schema:
+ *           type: string
+ *         description: Filter branches by name.
+ *       - in: query
+ *         name: phoneNumber
+ *         schema:
+ *           type: string
+ *         description: Filter branches by phone number.
+ *       - in: query
+ *         name: regionId
+ *         schema:
+ *           type: integer
+ *         description: Filter branches by region ID.
+ *       - in: query
+ *         name: learningCenterId
+ *         schema:
+ *           type: integer
+ *         description: Filter branches by learning center ID.
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum: [name, phoneNumber, createdAt]
+ *         description: Sort branches by a specific field.
+ *       - in: query
+ *         name: order
+ *         schema:
+ *           type: string
+ *           enum: [ASC, DESC]
+ *         description: Sort order (ascending or descending).
  *     responses:
  *       200:
  *         description: A list of branches.
+ *       400:
+ *         description: Invalid query parameters.
  *       500:
  *         description: Internal server error.
  */
+
 
 /**
  * @swagger

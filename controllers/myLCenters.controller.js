@@ -45,7 +45,7 @@ export async function getMyCenters(req, res) {
                 { model: User, attributes: { exclude: ["password"] } },
                 { model: Region },
                 { model: Comment },
-                { model: Like },
+                { model: Like, attributes: [] },
             ],
             group: [
                 "learningCenter.id",  

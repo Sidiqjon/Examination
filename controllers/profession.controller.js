@@ -161,6 +161,9 @@ async function Search(req, res) {
     });
 
     if (query.sortField && query.sortOrder) {
+      if (!Profession.rawAttributes[query.sortField]) {
+        return res.status(400).json({ error: "Invalid sort field" });
+      }
       const sortField = query.sortField;
       const sortOrder =
         query.sortOrder.toUpperCase() === "DESC" ? "DESC" : "ASC";
