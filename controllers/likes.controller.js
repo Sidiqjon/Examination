@@ -47,7 +47,7 @@ async function remove(req, res) {
     let check = await Like.findOne({ where: { id } });
 
     if (!check) {
-      return res.status(404).json({ error: "Like Not Found" });
+      return res.status(404).json({ error: "Like Not Found with this Id" });
     }
 
     if (req.user.id !== check.userId) {

@@ -97,9 +97,6 @@ export default route
  *               description:
  *                 type: string
  *                 example: "Comprehensive React tutorial"
- *               createdBy:
- *                 type: integer
- *                 example: 1
  *               categoryId:
  *                 type: integer
  *                 example: 2
