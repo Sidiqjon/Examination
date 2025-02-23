@@ -118,7 +118,7 @@ async function remove(req, res) {
     await Profession.destroy({ where: { id } });
 
 
-    res.status(200).json({ message: "Profession Delete Successfully",data: check });
+    res.status(200).json({ message: "Profession Deleted Successfully",data: check });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }

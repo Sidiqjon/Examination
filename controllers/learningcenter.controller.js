@@ -11,6 +11,8 @@ import Field from "../models/field.model.js";
 import Like from "../models/like.model.js";
 import Comment from "../models/comment.model.js";
 import Branch from "../models/branch.model.js";
+import path from "path";
+import fs from "fs";
 
 const deleteOldImage = (imgPath) => {
   if (imgPath) {
@@ -249,7 +251,7 @@ async function create(req, res) {
     });
 
 
-    res.status(201).json({ message: "New Learning Center Created Succesfully" });
+    res.status(201).json({ message: "New Learning Center Created Succesfully", data: newLc });
   } catch (e) {
 
     res.status(500).json({ error: e.message });
@@ -315,7 +317,7 @@ async function remove(req, res) {
         .json({ error: "You are not allowed to delete this Learning Center" });
     }
 
-    if (value.img) {
+    if (check.img) {
       deleteOldImage(check.img);
     }
 
