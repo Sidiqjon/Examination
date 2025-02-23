@@ -140,13 +140,12 @@ export default route
  *       500:
  *         description: Server error
  */
-
 /**
  * @swagger
  * /api/fields/{id}:
  *   patch:
  *     summary: 🛠️ Update a field
- *     description: Only admins can update field details.
+ *     description: Only admins can update field details (`name` and `img` only).
  *     tags: [Fields]
  *     security:
  *       - bearerAuth: []
@@ -156,7 +155,7 @@ export default route
  *         required: true
  *         schema:
  *           type: integer
- *         description: Field ID
+ *         description: Field ID.
  *     requestBody:
  *       required: true
  *       content:
@@ -167,21 +166,24 @@ export default route
  *               name:
  *                 type: string
  *                 example: "Software Engineering"
+ *                 description: Updated field name.
  *               img:
  *                 type: string
  *                 example: "https://example.com/new-image.jpg"
+ *                 description: Updated field image URL.
  *     responses:
  *       200:
- *         description: Field updated successfully
+ *         description: ✅ Field updated successfully.
  *       400:
- *         description: Validation error
+ *         description: ❌ Validation error.
  *       403:
- *         description: Unauthorized access
+ *         description: 🚫 Unauthorized access (admin only).
  *       404:
- *         description: Field not found
+ *         description: 🔍 Field not found.
  *       500:
- *         description: Server error
+ *         description: ⚠️ Server error.
  */
+
 
 /**
  * @swagger
