@@ -1,15 +1,22 @@
 import { Router } from "express";
-import { findAll, Search, findOne, create, update, remove } from "../controllers/comment.controller.js";
-import authentication from "../middlewares/authentication.js"
+import {
+  findAll,
+  Search,
+  findOne,
+  create,
+  update,
+  remove,
+} from "../controllers/comment.controller.js";
+import authentication from "../middlewares/authentication.js";
 
 const router = Router();
 
-router.get("/search", Search);  
-router.get("/", findAll);  
-router.get("/:id", findOne);  
-router.post("/",authentication, create);  
-router.patch("/:id",authentication, update);  
-router.delete("/:id",authentication, remove);  
+router.get("/search", Search);
+router.get("/", findAll);
+router.get("/:id", findOne);
+router.post("/", authentication, create);
+router.patch("/:id", authentication, update);
+router.delete("/:id", authentication, remove);
 
 export default router;
 
@@ -108,7 +115,10 @@ export default router;
  *         application/json:
  *           schema:
  *             type: object
- *             required: [comment, star, learningCenterId]
+ *             required:
+ *               - comment
+ *               - star
+ *               - learningCenterId
  *             properties:
  *               comment:
  *                 type: string

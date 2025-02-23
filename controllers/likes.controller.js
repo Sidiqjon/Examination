@@ -41,6 +41,8 @@ async function create(req, res) {
 
 async function remove(req, res) {
   try {
+    console.log(req.params);
+    
     let { id } = req.params;
     let check = await Like.findOne({ where: { id } });
 
