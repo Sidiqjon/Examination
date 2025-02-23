@@ -2,6 +2,8 @@ import LearningCenter from "../models/learningCenter.model.js";
 import Comment from "../models/comment.model.js";
 import Like from "../models/like.model.js";
 import { Op, Sequelize } from "sequelize";
+import Branch from "../models/branch.model.js";
+import Region from "../models/region.model.js";
 
 async function getLCsByStars(req, res) {
   try {
@@ -23,7 +25,12 @@ async function getLCsByStars(req, res) {
       include: [
         {
           model: Comment,
-          attributes: [],
+        },
+        {
+          model: Branch,
+        },
+        {
+          model: Region,
         },
       ],
       group: ["learningCenter.id"],
@@ -59,7 +66,12 @@ async function getLCsByComments(req, res) {
       include: [
         {
           model: Comment,
-          attributes: [],
+        },
+        {
+          model: Branch,
+        },
+        {
+          model: Region,
         },
       ],
       group: ["learningCenter.id"],
@@ -96,7 +108,12 @@ async function getLCsByLikes(req, res) {
       include: [
         {
           model: Like,
-          attributes: [],
+        },
+        {
+          model: Branch,
+        },
+        {
+          model: Region,
         },
       ],
       group: ["learningCenter.id"],
