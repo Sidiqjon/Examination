@@ -43,16 +43,6 @@ const Field = db.define(
   },
   {
     timestamps: true,
-    validate: {
-      atLeastOneField() {
-        if (!this.professionId && !this.subjectId) {
-          throw new Error("Either professionId or subjectId must be provided.");
-        }
-        if (this.professionId && this.subjectId) {
-          throw new Error("Only one of professionId or subjectId should be provided.");
-        }
-      },
-    },
   }
 );
 
