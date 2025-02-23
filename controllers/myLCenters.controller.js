@@ -7,7 +7,7 @@ export async function getMyCenters(req, res) {
        let centers = await LearningCenter.findAll({ where: { createdBy: id } }, { include: { all: true } });
  
        if (centers.length === 0) {
-          return res.status(404).json({ message: "Learning centers not found!" });
+          return res.status(404).json({ message: "Learning centers not found! You have no Learning centers yet!" });
        }
  
        res.status(200).json({ data: centers });
