@@ -11,6 +11,27 @@ export default route;
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     LearningCenter:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         name:
+ *           type: string
+ *           example: "Tech Academy"
+ *         regionId:
+ *           type: integer
+ *           example: 2
+ *         createdBy:
+ *           type: integer
+ *           example: 5
+ */
+
+/**
+ * @swagger
  * /api/my-learning-centers:
  *   get:
  *     summary: "🔍 Get Learning Centers Created by Current User"
@@ -43,8 +64,32 @@ export default route;
  *                   example: "Learning centers not found!"
  *       401:
  *         description: "⛔ Unauthorized! Token is missing or invalid."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "🚫 Unauthorized!"
  *       403:
  *         description: "🚫 Forbidden! Only ADMIN and CEO can access this route."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "⛔ Forbidden!"
  *       500:
  *         description: "❌ Internal server error."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "🔥 Internal server error"
  */
