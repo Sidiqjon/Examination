@@ -9,6 +9,29 @@ import { LcFieldValidation, LcFieldPatchValidation } from "../validations/lcfiel
 async function create(req, res) {
   try {
 
+    let fields = req.body.fieldId
+
+    for (let field of fields) {
+      let check = await Field.findByPk(field);
+
+      if (!check) {
+        return res.status(404).json({ error: "Field Not Found!" });
+      }
+    }
+
+    for (let field of fields) {
+      let check = await LCfield.findOne({
+        where: {
+          learningCenterId: req.body.learningCenterId,
+          fieldId: field,
+        },
+      });
+
+      if (check) {
+        return res.status(409).json({ error: "Field Already Exists!" });
+      }
+    }
+
     let { error, value } = LcFieldValidation.validate(req.body);
 
     if (error) {
