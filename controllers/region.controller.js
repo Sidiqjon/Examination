@@ -4,7 +4,7 @@ import { Op } from "sequelize";
 
 async function findAll(req, res) {
   try {
-    let allRegions = await Region.findAll();
+    let allRegions = await Region.findAll({ include: { all: true } });
     if (!allRegions.length) {
       return res.status(404).json({ error: "Regions Not Found!" });
     }
@@ -17,7 +17,7 @@ async function findOne(req, res) {
   try {
     let id = Number(req.params.id);
 
-    let region = await Region.findOne({ where: { id } });
+    let region = await Region.findOne({ where: { id }, include: { all: true } });
     if (!region) {
       return res.status(404).json({ error: "Region Not Found" });
     }
