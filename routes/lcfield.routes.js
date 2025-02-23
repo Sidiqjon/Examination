@@ -13,7 +13,7 @@ export default route
 /**
  * @swagger
  * tags:
- *   name: LearningCenterFieldw
+ *   name: LearningCenterField
  *   description: 🏫 Manage Learning Center Fields
  */
 
