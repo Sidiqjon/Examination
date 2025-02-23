@@ -6,7 +6,7 @@ import authorization from "../middlewares/authorization.js"
 
 let ExcelRoute = Router()
 
-ExcelRoute.get("/users-excel", authentication, authorization(["ADMIN", "CEO"]), exportUsersToExcel);
+ExcelRoute.get("/users-excel", authentication, authorization(["ADMIN"]), exportUsersToExcel);
 ExcelRoute.get("/lc-excel", authentication, authorization(["ADMIN", "CEO"]), exportLearningCentersToExcel);
 
 export default ExcelRoute

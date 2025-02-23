@@ -26,8 +26,8 @@ async function refreshToken(req, res) {
             return res.status(404).json({ message: "User not found with the refresh token you provided!" });
         }
 
-        if (user.status !== "active") {
-            return res.status(400).json({ message: "Your Account is not active. Please verify your email first!" });
+        if (user.status !== "ACTIVE") {
+            return res.status(400).json({ message: "Your Account is not ACTIVE. Please verify your email first!" });
         }
 
         const accessToken = genAccessToken(user)
