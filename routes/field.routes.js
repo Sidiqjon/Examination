@@ -59,17 +59,6 @@ export default route
  *     summary: 📜 Get all fields
  *     description: Retrieve all fields with optional pagination.
  *     tags: [Fields]
- *     parameters:
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *         description: Page number
- *       - in: query
- *         name: take
- *         schema:
- *           type: integer
- *         description: Number of records per page
  *     responses:
  *       200:
  *         description: List of fields
