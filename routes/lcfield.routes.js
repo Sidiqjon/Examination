@@ -6,7 +6,7 @@ import authorization from "../middlewares/authorization.js"
 let route = Router()
 
 route.post("/", authentication, authorization(["ADMIN", "CEO"]), create)
-route.delete("/:id", authentication, authorization(["ADMIN", "CEO"]), remove)
+route.delete("/del", authentication, authorization(["ADMIN", "CEO"]), remove)
 
 export default route
 
@@ -99,7 +99,7 @@ export default route
 
 /**
  * @swagger
- * /api/lcfields/{id}:
+ * /api/lcfields/del:
  *   delete:
  *     summary: ❌ Remove fields from a Learning Center
  *     description: Remove one or more fields from a specific learning center. Only accessible by ADMIN or CEO.
