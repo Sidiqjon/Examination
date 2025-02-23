@@ -31,6 +31,16 @@ export default route
  *     tags: [Fields]
  *     parameters:
  *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number
+ *       - in: query
+ *         name: take
+ *         schema:
+ *           type: integer
+ *         description: Number of records per page
+ *       - in: query
  *         name: name
  *         schema:
  *           type: string
