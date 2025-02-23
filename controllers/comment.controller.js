@@ -9,7 +9,11 @@ import { Op } from "sequelize";
 
 async function findAll(req, res) {
   try {
-    let allComments = await Comment.findAll({ include: { all: true } });
+    let allComments = await Comment.findAll({
+      include: { model: LearningCenter },
+      include: { model: User, attributes: { exclude: ["password"] } },
+
+    });
     if (!allComments.length) {
       return res.status(404).json({ error: "No comments found" });
     }
@@ -22,7 +26,10 @@ async function findAll(req, res) {
 async function findOne(req, res) {
   try {
     const { id } = req.params;
-    const comment = await Comment.findByPk(id, { include: { all: true } });
+    const comment = await Comment.findByPk(id, {
+      include: { model: LearningCenter },
+      include: { model: User, attributes: { exclude: ["password"] } },
+    });
 
     if (!comment) {
       return res.status(404).send({ error: "Comment Not Found" });
@@ -136,7 +143,15 @@ async function Search(req, res) {
       let categories = await Comment.findAndCountAll({
         limit: take,
         offset: offset,
-        include: { all: true },
+        include: [
+          {
+            model: LearningCenter,
+          },
+          {
+            model: User,
+            attributes: { exclude: ["password"] },
+          },
+        ],
       });
 
       if (categories.rows.length == 0) {
@@ -178,7 +193,15 @@ async function Search(req, res) {
     let results = await Comment.findAll({
       where: conditions,
       order: order.length > 0 ? order : [["id", "ASC"]],
-      include: { all: true },
+      include: [
+        {
+          model: LearningCenter,
+        },
+        {
+          model: User,
+          attributes: { exclude: ["password"] },
+        },
+      ],
     });
 
     if (results.length == 0) {
