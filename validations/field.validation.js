@@ -9,7 +9,7 @@ const FieldValidation = joi.object({
 
 const FieldPatchValidation = joi.object({
   name: joi.string().min(2).max(32).pattern(/^[a-zA-Z0-9\s]+$/),
-  img: joi.string(),
+  img: joi.string()
 });
 
 export { FieldValidation, FieldPatchValidation };
