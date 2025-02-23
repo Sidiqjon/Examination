@@ -15,7 +15,7 @@ async function create(req, res) {
       let check = await Field.findByPk(field);
 
       if (!check) {
-        return res.status(404).json({ error: "Field Not Found!" });
+        return res.status(404).json({ error: `Field Not Found with the provided ID ${field}` });
       }
     }
 
@@ -28,7 +28,7 @@ async function create(req, res) {
       });
 
       if (check) {
-        return res.status(409).json({ error: "Field Already Exists!" });
+        return res.status(409).json({ error: `Field Already Exists with the provided ID ${field}` });
       }
     }
 
@@ -56,7 +56,7 @@ async function create(req, res) {
       await LCfield.create({ learningCenterId, fieldId: field }); 
     }
 
-    res.status(201).json({ message: "Create Successfully" });
+    res.status(201).json({ message: "Learning Center Field Created Successfully" });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
