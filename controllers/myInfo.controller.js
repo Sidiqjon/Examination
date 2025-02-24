@@ -23,7 +23,6 @@ async function getMyInfo(req, res) {
           },
           {
             model: Like,
-            attributes: ["learningCenterId"],
           },
           {
             model: UserEnrolment, 

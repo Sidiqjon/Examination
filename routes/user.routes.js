@@ -6,7 +6,7 @@ import authorization from "../middlewares/authorization.js"
 let userRoute = Router();
 
 userRoute.get("/", authentication, authorization(["ADMIN", "CEO", "USER"]), getAll);
-userRoute.get("/:id",authentication, authorization(["ADMIN"]), getOne);
+userRoute.get("/:id",authentication, authorization(["ADMIN", "CEO"]), getOne);
 userRoute.patch("/:id", authentication, authorization(["ADMIN", "CEO", "USER"]), update);
 userRoute.delete("/:id", authentication, authorization(["ADMIN", "CEO", "USER"]), remove);
 
