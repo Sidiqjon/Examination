@@ -7,7 +7,7 @@ import authorization from "../middlewares/authorization.js"
 let ExcelRoute = Router()
 
 ExcelRoute.get("/users-excel", authentication, authorization(["ADMIN"]), exportUsersToExcel);
-ExcelRoute.get("/lc-excel", authentication, authorization(["ADMIN", "CEO"]), exportLearningCentersToExcel);
+ExcelRoute.get("/lc-excel", authentication, authorization(["ADMIN"]), exportLearningCentersToExcel);
 
 export default ExcelRoute
 
@@ -59,7 +59,7 @@ export default ExcelRoute
  *               type: string
  *               format: binary
  *       403:
- *         description: Unauthorized, only ADMIN or CEO can access.
+ *         description: Unauthorized, only ADMIN can access.
  *       500:
  *         description: Server error.
  */
