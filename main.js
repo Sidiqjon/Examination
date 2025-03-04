@@ -4,6 +4,7 @@ import mainRoute from "./routes/index.js";
 import dotenv from "dotenv";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import cors from "cors"
 
 dotenv.config()
 const PORT = process.env.PORT || 3000
@@ -41,6 +42,14 @@ const specs = swaggerJsdoc(options);
 
 const app = express();
 app.use(express.json());
+
+app.use(
+   cors({
+      origin: "*",
+      methods: "GET,POST,PATCH,DELETE",
+      allowedHeaders: "Content-Type,Authorization",
+   })
+);
 
 app.use("/api", mainRoute);
 
