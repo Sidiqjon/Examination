@@ -11,7 +11,7 @@ const PASSWORD = process.env.PASSWORD || "dhwj ofzg kswh ybzf" ;
 let transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "testotpn16@gmail.com",
+    user: "sidiqjonyusufjanov7@gmail.com",
     pass: PASSWORD,
   },
 });
